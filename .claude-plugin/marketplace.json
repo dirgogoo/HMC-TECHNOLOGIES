@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "hmc-marketplace",
+      "name": "hmc-technologies",
       "description": "Complete marketplace with 9 skills (ALD System + Nexus Orchestrator), 12 workflows, hooks, and i18n support",
       "version": "2.0.0",
       "source": "./",
