@@ -1,0 +1,476 @@
+name: "Performance Optimization Workflow"
+description: "Systematic performance investigation and optimization workflow with before/after comparisons"
+version: "2.0.0"
+
+metadata:
+  intendedFor: ["performance", "optimization", "slow"]
+  complexity: "medium"
+  estimatedDuration: 50  # minutes
+  keywords: ["performance", "slow", "optimize", "speed", "latency", "memory", "cpu", "bundle size"]
+
+defaults:
+  timeout: 600000  # 10 minutes per phase
+  on_failure: "prompt"
+  on_timeout: "prompt"
+  max_retries: 2
+
+required:
+  plugins: ["ald-system"]
+  mcps: ["chrome-devtools"]  # Required for UI performance audits
+
+triggers:
+  keywords: ["performance", "slow", "optimize", "speed up", "lag", "latency", "bundle size"]
+  complexity: ["medium", "large"]
+  has_plan: false
+
+phases:
+  - id: "load-context"
+    name: "Load Project Context"
+    description: "Load memory, tech stack, past optimizations"
+    timeout: 60000  # 1 minute
+    hooks:
+      - plugin: "ald-system"
+        hook: "load-memory"
+        required: true
+    on_failure: "abort"
+
+  - id: "baseline-measurement"
+    name: "Establish Performance Baseline"
+    description: "Measure current performance before optimization"
+    timeout: 600000  # 10 minutes
+    dependencies: ["load-context"]
+    hooks:
+      - plugin: "mcp-chrome-devtools"
+        hook: "performance-audit"
+        required: true
+    measurement_areas: |
+      **Measure Performance Metrics**:
+
+      **Frontend Performance** (Chrome DevTools):
+      ☐ Lighthouse Performance Score
+      ☐ First Contentful Paint (FCP)
+      ☐ Largest Contentful Paint (LCP)
+      ☐ Time to Interactive (TTI)
+      ☐ Total Blocking Time (TBT)
+      ☐ Cumulative Layout Shift (CLS)
+      ☐ Bundle size (JS/CSS)
+
+      **Backend Performance** (if applicable):
+      ☐ API response times (p50, p95, p99)
+      ☐ Database query times
+      ☐ Server CPU/Memory usage
+      ☐ Throughput (requests/second)
+
+      **Recording Baseline**:
+      ```json
+      {
+        "measured_at": "2025-10-29T14:30:00Z",
+        "lighthouse_score": 65,
+        "fcp": 2.3,
+        "lcp": 4.1,
+        "tti": 5.8,
+        "tbt": 450,
+        "cls": 0.15,
+        "bundle_size_js": 850, // KB
+        "bundle_size_css": 120, // KB
+        "api_p95": 1200 // ms
+      }
+      ```
+
+      Save baseline for comparison after optimization.
+
+  - id: "bottleneck-analysis"
+    name: "Identify Performance Bottlenecks"
+    description: "Find the slowest parts of the application"
+    timeout: 600000  # 10 minutes
+    dependencies: ["baseline-measurement"]
+    hooks:
+      - plugin: "mcp-chrome-devtools"
+        hook: "profile-performance"
+        required: true
+    analysis_techniques: |
+      **Profiling Techniques**:
+
+      **1. Chrome DevTools Performance Tab**:
+      - Record page load
+      - Identify long tasks (>50ms)
+      - Check JavaScript execution time
+      - Look for layout thrashing
+
+      **2. Network Analysis**:
+      - Large assets (images, fonts)
+      - Too many requests
+      - Slow third-party scripts
+      - Missing compression
+
+      **3. Code Analysis**:
+      - Expensive computations
+      - Unnecessary re-renders (React)
+      - Memory leaks
+      - Inefficient algorithms
+
+      **4. Database Analysis** (if backend):
+      - Slow queries (>100ms)
+      - Missing indexes
+      - N+1 queries
+      - Large result sets
+
+      **Common Bottlenecks**:
+      - Unoptimized images
+      - Large JavaScript bundles
+      - Blocking third-party scripts
+      - Inefficient React renders
+      - Slow database queries
+      - Missing CDN/caching
+
+      **Priority Matrix**:
+      High Impact, Low Effort:
+      - [List quick wins here]
+
+      High Impact, High Effort:
+      - [List major optimizations]
+
+      Low Impact, Low Effort:
+      - [List nice-to-haves]
+
+      Low Impact, High Effort:
+      - [Skip these]
+
+  - id: "find-policies"
+    name: "Find Performance Policies"
+    description: "Identify relevant ALD performance policies"
+    timeout: 180000  # 3 minutes
+    dependencies: ["bottleneck-analysis"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "policy-finder"
+        required: true
+        filter: "performance"
+    policy_areas: |
+      Look for policies related to:
+      - Code splitting
+      - Image optimization
+      - Lazy loading
+      - Caching strategies
+      - Bundle size limits
+      - Database query optimization
+
+  - id: "create-optimization-plan"
+    name: "Plan Optimizations"
+    description: "Prioritize and plan performance improvements"
+    timeout: 600000  # 10 minutes
+    dependencies: ["bottleneck-analysis", "find-policies"]
+    hooks: []
+    planning_template: |
+      ## Performance Optimization Plan
+
+      **Baseline Score**: [e.g., Lighthouse 65]
+      **Target Score**: [e.g., Lighthouse 90+]
+      **Target Metrics**:
+      - LCP: < 2.5s
+      - FCP: < 1.8s
+      - TBT: < 200ms
+      - CLS: < 0.1
+
+      **Optimizations to Implement**:
+
+      ### High Priority (Quick Wins):
+      1. **[Optimization Name]**
+         - Problem: [what's slow]
+         - Solution: [how to fix]
+         - Expected impact: [metric improvement]
+         - Effort: [time estimate]
+
+      2. **[Next optimization]**
+         ...
+
+      ### Medium Priority:
+      ...
+
+      ### Low Priority (if time permits):
+      ...
+
+      **Example Optimizations**:
+      - Image optimization (WebP, lazy loading)
+      - Code splitting (dynamic imports)
+      - Remove unused dependencies
+      - Implement caching
+      - Database index optimization
+      - Bundle size reduction
+
+  - id: "implement-optimizations"
+    name: "Implement Performance Improvements"
+    description: "Apply optimizations from plan"
+    timeout: 1800000  # 30 minutes
+    dependencies: ["create-optimization-plan"]
+    hooks: []
+    implementation_guidelines: |
+      **Implementation Best Practices**:
+
+      **1. Measure After Each Change**
+      - Don't optimize blindly
+      - Measure impact of each optimization
+      - Roll back if no improvement
+
+      **2. Common Optimizations**:
+
+      **Frontend**:
+      ```typescript
+      // Code Splitting
+      const Dashboard = lazy(() => import('./Dashboard'));
+
+      // Image Optimization
+      <img src="image.webp" loading="lazy" width={600} height={400} />
+
+      // Memoization
+      const expensiveValue = useMemo(() => computeExpensiveValue(data), [data]);
+
+      // Virtualization (large lists)
+      import { FixedSizeList } from 'react-window';
+      ```
+
+      **Backend**:
+      ```sql
+      -- Add Database Index
+      CREATE INDEX idx_users_email ON users(email);
+
+      -- Optimize Query (select only needed columns)
+      SELECT id, name, email FROM users WHERE active = true;
+      ```
+
+      **Bundle Size**:
+      ```javascript
+      // Use imports strategically
+      import { debounce } from 'lodash-es/debounce'; // Not: import _ from 'lodash';
+
+      // Tree-shaking friendly
+      import { Button } from '@mui/material/Button'; // Not: import { Button } from '@mui/material';
+      ```
+
+      **3. Avoid Premature Optimization**
+      - Profile first, optimize second
+      - Focus on bottlenecks
+      - Don't sacrifice readability without reason
+
+  - id: "performance-comparison"
+    name: "Measure Performance After Optimization"
+    description: "Re-run performance audits and compare to baseline"
+    timeout: 600000  # 10 minutes
+    dependencies: ["implement-optimizations"]
+    hooks:
+      - plugin: "mcp-chrome-devtools"
+        hook: "performance-audit"
+        required: true
+    comparison_template: |
+      ## Performance Comparison
+
+      **Baseline** (Before):
+      - Lighthouse Score: [65]
+      - FCP: [2.3s]
+      - LCP: [4.1s]
+      - TTI: [5.8s]
+      - TBT: [450ms]
+      - CLS: [0.15]
+      - Bundle Size: [850 KB]
+
+      **After Optimization**:
+      - Lighthouse Score: [88] ✅ +23 points
+      - FCP: [1.2s] ✅ -1.1s
+      - LCP: [2.1s] ✅ -2.0s
+      - TTI: [3.2s] ✅ -2.6s
+      - TBT: [180ms] ✅ -270ms
+      - CLS: [0.08] ✅ -0.07
+      - Bundle Size: [620 KB] ✅ -230 KB
+
+      **Improvements**:
+      - Overall score improved by 35%
+      - LCP reduced by 49% (below 2.5s target) ✅
+      - Bundle size reduced by 27%
+
+      **Target Achievement**:
+      ✅ LCP < 2.5s: ACHIEVED
+      ✅ FCP < 1.8s: ACHIEVED
+      ✅ TBT < 200ms: ACHIEVED
+      ✅ CLS < 0.1: ACHIEVED
+      ✅ Lighthouse > 90: CLOSE (88)
+
+  - id: "regression-validation"
+    name: "Validate No Regressions"
+    description: "Ensure optimizations didn't break functionality"
+    timeout: 600000  # 10 minutes
+    dependencies: ["performance-comparison"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "tester"
+        required: true
+    validation_checklist: |
+      **Regression Testing**:
+
+      ☐ **Functionality Still Works**
+      - Core features operational
+      - No console errors
+      - No visual glitches
+
+      ☐ **User Experience Maintained**
+      - Interactions responsive
+      - Animations smooth
+      - No janky scrolling
+
+      ☐ **Cross-Browser Testing** (if critical):
+      - Chrome ✓
+      - Firefox ✓
+      - Safari ✓
+      - Mobile browsers ✓
+
+      ☐ **Accessibility Not Impacted**
+      - Screen reader compatibility
+      - Keyboard navigation
+      - Color contrast
+
+      **If regressions found**:
+      1. Identify which optimization caused it
+      2. Roll back that specific change
+      3. Re-measure performance
+      4. Find alternative optimization
+
+  - id: "document-optimizations"
+    name: "Document Performance Improvements"
+    description: "Record what was done and results achieved"
+    timeout: 300000  # 5 minutes
+    dependencies: ["regression-validation"]
+    hooks: []
+    documentation_template: |
+      ## Performance Optimization Report
+
+      **Date**: [2025-10-29]
+      **Duration**: [50 minutes]
+
+      ### Summary
+      Improved Lighthouse score from 65 to 88 (+35%) by optimizing images, code splitting, and adding database indexes.
+
+      ### Optimizations Applied
+
+      #### 1. Image Optimization
+      **Problem**: 2.5 MB of unoptimized images
+      **Solution**: Converted to WebP, added lazy loading
+      **Impact**: -1.8s LCP, -1.2 MB transfer size
+      **Code**:
+      ```jsx
+      <img src="hero.webp" loading="lazy" />
+      ```
+
+      #### 2. Code Splitting
+      **Problem**: 850 KB initial bundle
+      **Solution**: Dynamic imports for routes
+      **Impact**: -230 KB initial bundle
+      **Code**:
+      ```ts
+      const Dashboard = lazy(() => import('./Dashboard'));
+      ```
+
+      #### 3. Database Index
+      **Problem**: Slow user lookup (800ms)
+      **Solution**: Added index on email column
+      **Impact**: -720ms query time
+      **Code**:
+      ```sql
+      CREATE INDEX idx_users_email ON users(email);
+      ```
+
+      ### Metrics Comparison
+      [Include before/after table from performance-comparison phase]
+
+      ### Recommendations for Future
+      - Consider CDN for static assets
+      - Implement service worker for offline caching
+      - Further bundle size reduction possible
+
+      ### Files Changed
+      - src/components/Hero.tsx (image optimization)
+      - src/App.tsx (code splitting)
+      - migrations/add_user_email_index.sql
+
+  - id: "learning-capture"
+    name: "Capture Performance Learnings"
+    description: "Save optimization patterns to ALD memory"
+    timeout: 120000  # 2 minutes
+    dependencies: ["document-optimizations"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "curator"
+        required: true
+    capture_items: |
+      Capture to ALD memory:
+      - Optimization techniques used
+      - Performance impact measurements
+      - Bottlenecks identified
+      - Tools and methods effective
+      - Patterns to apply in future
+
+workflow_notes: |
+  **When to use Performance Workflow**:
+  - Page load too slow (>3 seconds)
+  - App feels laggy or unresponsive
+  - Bundle size too large (>500 KB)
+  - API endpoints slow (>500ms)
+  - Lighthouse score < 80
+  - User complaints about speed
+
+  **When NOT to use**:
+  - Premature optimization (no actual problem)
+  - During feature development (optimize after MVP)
+  - If performance is already good
+
+  **Performance Philosophy**:
+  1. **Measure First**: No guessing, only data
+  2. **Prioritize Impact**: Focus on biggest bottlenecks
+  3. **Verify Improvement**: Measure after each change
+  4. **No Regressions**: Speed shouldn't break functionality
+  5. **Document Everything**: Future you needs context
+
+  **Common Performance Wins**:
+  - Image optimization (WebP, lazy loading): -30-50% LCP
+  - Code splitting: -30-40% initial bundle
+  - Database indexes: -80-90% query time
+  - Caching: -50-70% response time
+  - CDN: -40-60% asset load time
+
+success_criteria:
+  - Lighthouse score > 90
+  - LCP < 2.5s
+  - FCP < 1.8s
+  - TBT < 200ms
+  - No functionality regressions
+  - Improvements documented
+
+performance_targets:
+  excellent:
+    lighthouse: ">= 90"
+    lcp: "< 2.5s"
+    fcp: "< 1.8s"
+    tbt: "< 200ms"
+    cls: "< 0.1"
+
+  good:
+    lighthouse: ">= 80"
+    lcp: "< 4.0s"
+    fcp: "< 3.0s"
+    tbt: "< 300ms"
+    cls: "< 0.25"
+
+  needs_improvement:
+    lighthouse: "< 80"
+    lcp: ">= 4.0s"
+    fcp: ">= 3.0s"
+    tbt: ">= 300ms"
+    cls: ">= 0.25"
+
+estimated_times:
+  baseline_measurement: "5-10 minutes"
+  bottleneck_analysis: "8-12 minutes"
+  planning: "5-10 minutes"
+  implementation: "20-30 minutes"
+  performance_comparison: "5-10 minutes"
+  regression_validation: "5-10 minutes"
+  documentation: "3-5 minutes"
+  total: "50-85 minutes"
