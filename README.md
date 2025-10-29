@@ -1,10 +1,10 @@
-# HMC Technologies Marketplace
+# HMC Technologies
 
 **AI-Powered Development System for Claude Code**
 
-A unified skills-based marketplace combining powerful development tools: ALD System (Autonomous Learning & Development) and Nexus (Master Workflow Orchestrator).
+A complete development system combining ALD (Autonomous Learning & Development) with Nexus (Master Workflow Orchestrator) - ready to install directly into your `~/.claude/` directory.
 
-> **Note**: As of v2.0.0, this marketplace follows a **flat skills-based structure** using the Superpowers pattern. All skills are auto-discovered from the `skills/` directory.
+> **v3.0.0**: Now available as **direct installation** - no marketplace required. Install once, use forever.
 
 ---
 
@@ -45,32 +45,69 @@ A unified skills-based marketplace combining powerful development tools: ALD Sys
 - 🎨 **SessionStart Hook** - Welcome message on startup
 
 **Command:**
-- `/nexus:execute [task]` - Invoke orchestrator for intelligent workflow management
+- `/nexus [task]` - Invoke orchestrator for intelligent workflow management
 
 ---
 
 ## 🚀 Installation
 
-### One-Line Install
+### Automated Installation (Recommended)
 
 ```bash
-/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
+# Clone repository
+git clone https://github.com/dirgogoo/HMC-TECHNOLOGIES.git
+cd HMC-TECHNOLOGIES
+
+# Run installer
+./install.sh
 ```
 
-This installs the entire marketplace with all skills!
+The installer will:
+- ✅ Backup any existing installation
+- ✅ Install commands to `~/.claude/commands/`
+- ✅ Install skills to `~/.claude/skills/`
+- ✅ Install config to `~/.claude/config/`
+- ✅ Install hooks to `~/.claude/hooks/`
+- ✅ Set correct permissions
+- ✅ Verify installation
+
+### Manual Installation
+
+If you prefer manual control:
+
+```bash
+# Clone repository
+git clone https://github.com/dirgogoo/HMC-TECHNOLOGIES.git
+cd HMC-TECHNOLOGIES
+
+# Copy commands
+cp -r commands/* ~/.claude/commands/
+
+# Copy skills
+cp -r skills/* ~/.claude/skills/
+
+# Copy config
+mkdir -p ~/.claude/config/i18n
+cp config/defaults.yml ~/.claude/config/
+cp config/i18n/* ~/.claude/config/i18n/
+
+# Copy hooks
+mkdir -p ~/.claude/hooks
+cp hooks/hooks.json ~/.claude/hooks/
+cp hooks/session-start.sh ~/.claude/hooks/
+chmod +x ~/.claude/hooks/session-start.sh
+```
 
 ### Verify Installation
 
 ```bash
-/plugin menu
+ls ~/.claude/commands/nexus.md
+ls ~/.claude/skills/nexus/
+ls ~/.claude/config/defaults.yml
+ls ~/.claude/hooks/hooks.json
 ```
 
-You should see:
-- ✅ **HMC Technologies Marketplace** (9 skills total)
-  - 8 ALD skills (ald-memory, ald-policies, ald-curator, etc.)
-  - 1 Nexus orchestrator skill
-- ✅ **Commands**: `/nexus:execute`
-- ✅ **Hooks**: SessionStart (welcome message)
+All files should exist. Restart Claude Code and you're ready!
 
 ---
 
@@ -79,10 +116,9 @@ You should see:
 ### Using ALD System
 
 ```bash
-# Invoke any ALD skill automatically
-# Skills are used automatically by Claude based on context
+# Skills are invoked automatically by Claude based on context
 
-# Example workflow:
+# Example workflow (automatic):
 # 1. Start a task → ald-memory loads project context
 # 2. Implement code → ald-policies enforces 155 policies
 # 3. Validate → ald-tester checks as end user
@@ -93,38 +129,65 @@ You should see:
 
 ```bash
 # Orchestrate complex workflows
-/nexus:execute implement checkout with Stripe
+/nexus implement checkout with Stripe
 
-# Or simply use /nexus (activates nexus skill automatically)
-/nexus implement user authentication
-
-# Nexus automatically:
-# 1. Detects intent (feature, bugfix, hotfix, etc.)
-# 2. Selects optimal workflow
-# 3. Coordinates Superpowers + ALD + MCPs
-# 4. Presents workflow for confirmation
-# 5. Executes phases and aggregates results
+# Nexus will:
+# 1. Analyze intent (feature-development, high complexity)
+# 2. Suggest workflow (feature-full.yml)
+# 3. Ask for confirmation
+# 4. Coordinate: Brainstorm → Plan → Load Context → Execute → Validate → Review
+# 5. Return unified report
 ```
+
+### Available Workflows
+
+**Feature Development:**
+- `feature-full.yml` - Complex features with brainstorming (60-120 min)
+- `feature-quick.yml` - Medium features with planning (30-45 min)
+- `feature-tdd.yml` - TDD-focused development (45-90 min)
+
+**Maintenance:**
+- `bugfix.yml` - Bug fixes with root cause analysis (10-20 min)
+- `hotfix.yml` - Emergency fixes, minimal steps (5-10 min)
+- `refactor.yml` - Code refactoring with quality focus (20-40 min)
+- `chore.yml` - Maintenance tasks (dependencies, config) (5-15 min)
+
+**Quality:**
+- `code-review.yml` - Policy compliance review (5-10 min)
+- `documentation.yml` - Documentation improvements (10-20 min)
+
+**Special:**
+- `migration.yml` - Database migrations (15-30 min)
+- `performance.yml` - Performance optimization (30-60 min)
+- `spike.yml` - Research and prototyping (variable)
 
 ---
 
 ## 📖 Documentation
 
-### Marketplace Structure (v2.0.0)
+### Comprehensive Docs
+
+- **Nexus Orchestrator**: `~/.claude/skills/nexus/README.md` (785 lines)
+- **ALD Policies**: `~/.claude/skills/ald-policies/policies/` (155 policies)
+- **Sprint System**: `~/.claude/skills/ald-sprint/README.md`
+- **Workflows**: `~/.claude/skills/nexus/workflows/` (12 YAML files)
+
+### Directory Structure
+
 ```
-hmc-marketplace/
-├── commands/                 # Slash commands
-│   └── execute.md           # /nexus:execute command
-├── hooks/                   # Event hooks
-│   ├── hooks.json           # Hook configuration
-│   └── session-start.sh     # SessionStart welcome message
-├── config/                  # Global configuration
-│   ├── defaults.yml         # 200+ settings
-│   └── i18n/                # Multi-language support
-│       ├── pt-BR.yml        # Brazilian Portuguese
-│       └── en-US.yml        # US English
-└── skills/                  # Auto-discovered skills
-    ├── ald-memory/          # ALD System skills (8 total)
+~/.claude/
+├── commands/
+│   └── nexus.md                 # /nexus command
+├── config/
+│   ├── defaults.yml             # 200+ configuration settings
+│   └── i18n/
+│       ├── pt-BR.yml            # Brazilian Portuguese
+│       └── en-US.yml            # US English
+├── hooks/
+│   ├── hooks.json               # Hook configuration
+│   └── session-start.sh         # Welcome message
+└── skills/                      # 9 auto-discovered skills
+    ├── ald-memory/
     ├── ald-policies/
     ├── ald-curator/
     ├── ald-tester/
@@ -132,161 +195,139 @@ hmc-marketplace/
     ├── ald-sprint/
     ├── ald-policy-finder/
     ├── ald-code-reviewer/
-    └── nexus/               # Nexus orchestrator
-        ├── SKILL.md         # Executable orchestrator skill
-        ├── workflows/       # 12 workflow templates
-        ├── docs/            # Technical documentation
-        ├── plugins/         # Internal plugin registry
-        └── config/          # Nexus-specific config
+    └── nexus/                   # Master orchestrator
+        ├── SKILL.md             # Executable skill
+        ├── workflows/           # 12 workflows
+        ├── docs/                # Architecture
+        └── config/              # Nexus-specific config
 ```
 
-### ALD System
-- **Main Docs**: `skills/ald-memory/README.md` (and other ald-* skills)
-- **System Controller**: `skills/ald-memory/CLAUDE.md`
-- **Enforcement Guide**: `skills/ald-memory/docs/HOW_TO_ENFORCE_ALD.md`
-
-### Nexus
-- **Main Docs**: `skills/nexus/README.md`
-- **Skill Entry Point**: `skills/nexus/SKILL.md` (executable orchestrator)
-- **Workflow Templates**: `skills/nexus/workflows/` (12 workflows)
-- **MCP Integration**: `skills/nexus/MCP-INTEGRATION.md`
-- **Integration Tests**: `skills/nexus/INTEGRATION-TESTS.md`
-- **Changelog**: `skills/nexus/CHANGELOG.md`
-- **Contributing**: `skills/nexus/CONTRIBUTING.md`
-
 ---
 
-## 🔄 How They Work Together
+## 🔧 Configuration
 
-```
-User Task → Nexus (Orchestrator)
-              ↓
-         Analyze Intent
-              ↓
-      Select Workflow
-              ↓
-    ┌─────────┴─────────┐
-    ↓                   ↓
-Superpowers          ALD System
-(Brainstorm,      (Memory, Policies,
- Planning,         Testing, Learning)
- TDD, Review)
-    ↓                   ↓
-    └─────────┬─────────┘
-              ↓
-      Unified Result
+### Global Settings
+
+Edit `~/.claude/config/defaults.yml` to customize:
+
+```yaml
+# Language
+locale:
+  default: "pt-BR"              # pt-BR | en-US
+  fallback: "en-US"
+
+# Nexus behavior
+nexus:
+  default_workflow: "feature-quick"
+  auto_confirm_simple_tasks: false
+  show_workflow_details: true
+
+# ALD System
+plugins:
+  ald:
+    enabled: true
+    always_use_policies: true
+    auto_load_memory: true
+    sprint_validation: true
+
+# Output
+output:
+  verbose: false
+  show_policy_ids: true
+  use_emojis: true
 ```
 
-**Nexus** coordinates the workflow, **Superpowers** provides structured methodologies, and **ALD** enforces policies and validates quality.
+---
+
+## 🗑️ Uninstallation
+
+### Automated Uninstall
+
+```bash
+cd HMC-TECHNOLOGIES
+./uninstall.sh
+```
+
+The uninstaller will:
+- ✅ Backup all user data (memory, sprints, learnings)
+- ✅ Remove HMC Technologies files
+- ✅ Keep Claude Code installation intact
+- ✅ Provide restore instructions
+
+### Manual Uninstall
+
+```bash
+# Backup user data first
+mkdir -p ~/hmc-backup
+cp -r ~/.claude/skills/ald-memory/memory ~/hmc-backup/
+cp -r ~/.claude/skills/ald-sprint/active ~/hmc-backup/
+cp -r ~/.claude/skills/ald-curator ~/hmc-backup/
+
+# Remove HMC files
+rm ~/.claude/commands/nexus.md
+rm -rf ~/.claude/skills/ald-*
+rm -rf ~/.claude/skills/nexus
+rm ~/.claude/config/defaults.yml
+rm -rf ~/.claude/config/i18n
+rm ~/.claude/hooks/hooks.json
+rm ~/.claude/hooks/session-start.sh
+```
 
 ---
 
-## 🎯 Features
+## 🆘 Support
 
-### ALD System Features
-- ✅ 155 validated policies across 17 categories
-- ✅ Persistent memory across conversations
-- ✅ Sprint management with scope isolation
-- ✅ E2E validation (console, network, UX)
-- ✅ Continuous learning via curator
-- ✅ Intelligent policy search
-- ✅ Policy-aware code review
+### Issues & Questions
 
-### Nexus Features
-- ✅ Intent detection → workflow selection
-- ✅ Multi-plugin coordination (Superpowers + ALD + MCPs)
-- ✅ Declarative YAML workflows
-- ✅ Policy enforcement
-- ✅ MCP auto-injection
-- ✅ TDD by default
-- ✅ Unified reporting
-- ✅ Auto-update system
+- **GitHub Issues**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/issues
+- **Discussions**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/discussions
+
+### Common Issues
+
+**Problem**: `/nexus command not found`
+- **Solution**: Restart Claude Code after installation
+
+**Problem**: Skills not loading
+- **Solution**: Check file permissions: `chmod +x ~/.claude/hooks/session-start.sh`
+
+**Problem**: Policies not enforcing
+- **Solution**: Check config: `~/.claude/config/defaults.yml` → `plugins.ald.enabled: true`
 
 ---
 
-## 🛠️ Technology Stack
+## 📜 License
 
-**Languages**: Markdown (Skills), YAML (Workflows), JSON (Config)
-
-**Integrations**:
-- Claude Code plugin system
-- Superpowers marketplace (optional)
-- MCP servers (Supabase, GitHub, Chrome DevTools, etc.)
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-## 📊 Quality Gates
+## 🎯 Contributing
 
-Task is only complete when (enforced by ALD):
-- ✅ Tests passing
-- ✅ Console clean (0 errors)
-- ✅ Network requests OK
-- ✅ UX validated
-- ✅ Policies followed
-- ✅ Zero regressions
-- ✅ Edge cases handled
-- ✅ Performance acceptable
-- ✅ Accessibility working
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 🤝 Contributing
+## 📊 Version History
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-- Reporting issues
-- Submitting PRs
-- Adding new policies
-- Creating workflows
-- Testing changes
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
+**Current Version**: v3.0.0 (Direct Installation)
 
 ---
 
-## 📝 License
+## 🌟 Features at a Glance
 
-MIT License - Copyright (c) 2025 dirgogoo
-
-See [LICENSE](LICENSE) for details.
-
----
-
-## 📦 Version Information
-
-**Marketplace Version**: 2.0.0 (Flat Structure)
-- **ALD System**: v1.3.3 (8 skills)
-- **Nexus**: v2.0.0 (orchestrator skill)
-
-**Breaking Changes in v2.0.0**:
-- Migrated from nested `plugins/` to flat `skills/` structure
-- Command renamed: `/nexus:nexus` → `/nexus:execute`
-- Auto-discovery replaces marketplace.json registry
-- Added hooks system (SessionStart welcome message)
-- Added global config (200+ settings, i18n support)
-
-See [skills/nexus/CHANGELOG.md](skills/nexus/CHANGELOG.md) for complete version history.
+| Feature | ALD System | Nexus | Combined |
+|---------|-----------|-------|----------|
+| Workflow Orchestration | ✅ Basic | ✅ Advanced | ✅✅ Multi-Plugin |
+| Policy Enforcement | ✅ 155 Policies | ✅ Auto-Applied | ✅✅ Comprehensive |
+| Memory System | ✅ Persistent | ✅ Workflow State | ✅✅ Full Context |
+| Sprint Management | ✅ Scope Isolation | ✅ Workflow Integration | ✅✅ Complete Lifecycle |
+| Testing | ✅ E2E Validation | ✅ Phase Validation | ✅✅ Multi-Level |
+| Learning | ✅ Pattern Detection | ✅ Workflow Optimization | ✅✅ Continuous Improvement |
+| Multi-Language | ❌ | ✅ pt-BR + EN | ✅ Full i18n |
+| MCP Integration | ✅ Policy-Based | ✅ Auto-Injection | ✅✅ Seamless |
 
 ---
 
-## 🔗 Links
-
-- **Repository**: https://github.com/dirgogoo/HMC-TECHNOLOGIES
-- **Issues**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/issues
-- **Individual Plugin Repos** (deprecated):
-  - ALD System: https://github.com/dirgogoo/ald-system
-  - Nexus: https://github.com/dirgogoo/nexus
-
----
-
-## ⚡ Why Use This Marketplace?
-
-1. **Single Command Install** - One line installs everything
-2. **Unified System** - ALD + Nexus work together seamlessly
-3. **Production Ready** - 155 validated policies + tested workflows
-4. **Self-Improving** - Curator learns from your patterns
-5. **Quality Focused** - Zero compromises on code quality
-6. **Community Standard** - Follows Superpowers flat marketplace pattern
-7. **Multi-Language** - Brazilian Portuguese + US English (i18n)
-8. **Smart Hooks** - SessionStart welcome message shows capabilities
-
----
-
-**Made with ❤️ by dirgogoo**
+**Built with ❤️ by dirgogoo**

@@ -1,9 +1,92 @@
 # Changelog
 
-All notable changes to the HMC Technologies Marketplace will be documented in this file.
+All notable changes to HMC Technologies will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [3.0.0] - 2025-10-29
+
+### 🚨 BREAKING CHANGE: Direct Installation Model
+
+**Complete restructuring from marketplace-based to direct user installation.**
+
+This is a **major breaking change** - the entire installation model has changed. Users must uninstall v2.x and reinstall v3.0.
+
+#### Migration Path
+
+**From v2.x (Marketplace)**:
+```bash
+# Old installation (no longer supported)
+/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
+```
+
+**To v3.0 (Direct Installation)**:
+```bash
+# New installation
+git clone https://github.com/dirgogoo/HMC-TECHNOLOGIES.git
+cd HMC-TECHNOLOGIES
+./install.sh
+```
+
+### Added
+
+- **install.sh** - Automated installer with backup support
+- **uninstall.sh** - Clean uninstaller with user data backup
+- **README.md** - Completely rewritten for direct installation
+- **.gitignore** - Ignore user-generated data directories
+
+### Changed
+
+- **Installation Model**: Marketplace → Direct `~/.claude/` installation
+- **Repository Focus**: From marketplace container to installable system
+- **config/defaults.yml**: Updated repository URL to reflect new structure
+- **Version**: Bumped to 3.0.0 to reflect breaking changes
+
+### Removed
+
+- **.claude-plugin/** directory - No longer marketplace-based
+- **marketplace.json** - Not needed for direct installation
+- **plugin.json** - Not needed for direct installation
+- **CONTRIBUTING.md** - Will be recreated if needed
+- **lib/** - Empty directory removed
+
+### Why This Change?
+
+The marketplace model added unnecessary complexity:
+- Users faced installation errors (plugin not found, schema issues)
+- Cache conflicts between versions
+- Dependency on Claude Code marketplace infrastructure
+- Limited control over installation location
+
+**Direct installation benefits**:
+- ✅ Complete control - install once, use forever
+- ✅ No marketplace dependencies
+- ✅ Easier debugging - files visible in `~/.claude/`
+- ✅ Simpler updates - just `git pull` and reinstall
+- ✅ Better backup - direct access to user data
+- ✅ Cross-platform - works anywhere Claude Code runs
+
+---
+
+## [2.0.0] - 2025-10-29
+
+### 🚀 Marketplace Restructuring (DEPRECATED)
+
+**Note**: This version is deprecated. Use v3.0.0 instead.
+
+### Added
+- Flat skills-based marketplace structure (Superpowers pattern)
+- `.claude-plugin/marketplace.json` + `plugin.json`
+- `hooks/hooks.json` + SessionStart hook
+- `config/defaults.yml` + i18n (pt-BR, en-US)
+- 12 workflows including new `chore.yml`
+
+### Removed
+- Nested `plugins/` structure (134 files)
+- Legacy marketplace files
 
 ---
 

@@ -1,0 +1,60 @@
+# HMC Technologies - Git Ignore
+# Ignore user-generated data directories
+
+# ALD Memory - User data
+skills/ald-memory/memory/
+skills/ald-memory/data/
+
+# ALD Curator - Learning data
+skills/ald-curator/feedback.json
+skills/ald-curator/insights.json
+skills/ald-curator/runs/
+skills/ald-curator/data/
+
+# ALD Tester - Test runs and evidence
+skills/ald-tester/evidence/
+skills/ald-tester/runs/
+skills/ald-tester/data/
+
+# ALD Orchestrator - Runtime state
+skills/ald-orchestrator/task-queue.json
+skills/ald-orchestrator/workflow-state.json
+skills/ald-orchestrator/data/
+
+# ALD Sprint - Active sprint data
+skills/ald-sprint/active/
+skills/ald-sprint/data/
+
+# ALD Policy Finder - Generated index cache
+skills/ald-policy-finder/data/
+
+# Nexus - Workflow state
+skills/nexus/state/
+skills/nexus/data/
+
+# Backup directories created by install/uninstall
+.claude-backup-*
+.claude-uninstall-backup-*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

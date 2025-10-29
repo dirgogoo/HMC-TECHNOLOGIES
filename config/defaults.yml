@@ -100,9 +100,9 @@ developer:
 
 # Marketplace Metadata
 marketplace:
-  name: "HMC Technologies Marketplace"
-  version: "2.0.0"
-  repository: "https://github.com/dirgogoo/hmc-marketplace"
+  name: "HMC Technologies"
+  version: "3.0.0"
+  repository: "https://github.com/dirgogoo/HMC-TECHNOLOGIES"
   organization: "HMC Technologies"
 
   # Auto-update settings
