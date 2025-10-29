@@ -1,11 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/hooks-v1.schema.json",
   "hooks": {
-    "SessionStart": {
-      "enabled": true,
-      "description": "Welcome message when Claude Code starts",
-      "script": "./session-start.sh",
-      "timeout": 5000
-    }
+    "SessionStart": [
+      {
+        "enabled": true,
+        "description": "Welcome message when Claude Code starts",
+        "script": "./session-start.sh",
+        "timeout": 5000
+      }
+    ]
   }
 }
