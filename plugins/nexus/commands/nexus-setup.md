@@ -1,6 +1,8 @@
 # /nexus-setup - Automatic Installation
 
-Auto-install Nexus dependencies: ALD System + Superpowers + MCP setup instructions.
+Auto-install Nexus dependencies: Superpowers + MCP setup instructions.
+
+**Note**: ALD System is already included when you install HMC Technologies marketplace (`/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES`).
 
 ---
 
@@ -14,11 +16,11 @@ When `/nexus-setup` is invoked, execute this installation workflow:
 🚀 **Nexus Setup Wizard**
 
 This will install Nexus dependencies:
-✅ ALD System (8 local skills + 155 policies)
+✅ ALD System (already installed with HMC Technologies marketplace)
 ✅ Superpowers Marketplace plugins
 📋 MCP setup instructions (Supabase, Chrome DevTools, GitHub, Episodic Memory)
 
-**Estimated time**: 5-10 minutes
+**Estimated time**: 3-5 minutes
 
 Ready to proceed? (yes/no)
 ```
@@ -27,52 +29,7 @@ Wait for user confirmation before continuing.
 
 ---
 
-### Step 2: Install ALD System
-
-**Action**: Use `/plugin install` to install ALD System from GitHub
-
-**Command to execute**:
-```bash
-/plugin install https://github.com/dirgogoo/ald-system
-```
-
-**This will install**:
-1. ald-memory - Persistent context management
-2. ald-policies - 155 policies across 17 categories
-3. ald-curator - Pattern detection and learning
-4. ald-tester - E2E validation as end user
-5. ald-code-reviewer - Code review with policy validation
-6. ald-orchestrator - Workflow coordination
-7. ald-policy-finder - Intelligent policy search
-8. ald-sprint - Sprint management with scope isolation
-9. CLAUDE.md - ALD system controller
-
-**Wait for installation to complete** before proceeding to Step 3.
-
-**Progress output**:
-```markdown
-📦 Installing ALD System from GitHub...
-
-⚙️ Downloading from https://github.com/dirgogoo/ald-system...
-✅ ALD System v1.3.1 installed successfully!
-
-📊 Installed components:
-✅ ald-memory
-✅ ald-policies (155 policies)
-✅ ald-curator
-✅ ald-tester
-✅ ald-code-reviewer
-✅ ald-orchestrator
-✅ ald-policy-finder
-✅ ald-sprint
-✅ CLAUDE.md controller
-
-ALD System ready! ✅
-```
-
----
-
-### Step 3: Install Superpowers
+### Step 2: Install Superpowers
 
 **Action**: Use SlashCommand tool to install from marketplace
 
@@ -114,7 +71,7 @@ Then re-run: /nexus-setup to continue
 
 ---
 
-### Step 4: MCP Setup Instructions
+### Step 3: MCP Setup Instructions
 
 **Action**: Display MCP installation instructions (cannot auto-install - requires Claude Desktop app config)
 
@@ -217,7 +174,7 @@ After installing MCPs, verify with:
 
 ---
 
-### Step 5: Configuration Files
+### Step 4: Configuration Files
 
 **Action**: Create user configuration files
 
@@ -242,7 +199,7 @@ Configuration ready! ✅
 
 ---
 
-### Step 6: Verification
+### Step 5: Verification
 
 **Action**: Verify all components are installed correctly
 
@@ -314,7 +271,7 @@ try {
 
 ---
 
-### Step 7: Setup Complete
+### Step 6: Setup Complete
 
 ```markdown
 ✅ **Nexus Setup Complete!**
@@ -323,7 +280,7 @@ try {
 
 ## Installation Summary
 
-✅ ALD System (8 skills + 155 policies)
+✅ ALD System (already installed with marketplace)
 ✅ Superpowers Marketplace plugins
 ✅ Nexus orchestrator
 ✅ Configuration files created
@@ -384,28 +341,18 @@ Expected: Nexus analyzes intent → Selects code-review workflow → Executes AL
 
 ## Error Handling
 
-### If ALD installation fails:
+### If ALD System is missing:
 ```markdown
-❌ ALD System installation failed
+⚠️ ALD System not found
 
-**Manual installation**:
-1. Open Claude Code
-2. Run: /plugin install https://github.com/dirgogoo/ald-system
-3. If still fails, try:
-   - Check internet connection
-   - Verify GitHub repository is accessible
-   - Check ~/.claude/skills/ directory permissions
+**ALD System is part of HMC Technologies marketplace**.
+If you don't have it installed, run:
 
-**Alternative**: Install via git clone:
 ```bash
-cd ~/.claude/skills
-git clone https://github.com/dirgogoo/ald-system
-cp -r ald-system/skills/* ./
-cp ald-system/CLAUDE.md ./
-rm -rf ald-system
+/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
 ```
 
-**Get help**: https://github.com/dirgogoo/ald-system/issues
+This will install both ALD System and Nexus together.
 ```
 
 ### If Superpowers installation fails:
