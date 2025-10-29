@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/dirgogoo/HMC-TECHNOLOGIES/nexus/state-schema/v2.0.0",
+  "title": "Nexus Workflow State",
+  "description": "JSON schema for Nexus workflow state persistence (v2.0.0)",
+  "type": "object",
+  "required": ["id", "workflowName", "workflowFile", "userTask", "status", "startTime", "completedPhases", "results", "metadata"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^workflow-\\d{8}-\\d{6}$",
+      "description": "Unique workflow execution ID (format: workflow-YYYYMMDD-HHMMSS)",
+      "examples": ["workflow-20251029-123456"]
+    },
+    "workflowName": {
+      "type": "string",
+      "description": "Human-readable workflow name",
+      "examples": ["Full Feature Development with TDD", "Quick Bugfix"]
+    },
+    "workflowFile": {
+      "type": "string",
+      "description": "Workflow YAML filename",
+      "examples": ["feature-full.yml", "bugfix.yml"]
+    },
+    "userTask": {
+      "type": "string",
+      "description": "Original user task description",
+      "examples": ["implement checkout with Stripe", "fix cart total bug"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["INITIALIZING", "EXECUTING", "PAUSED", "ERROR", "COMPLETED", "ROLLBACK"],
+      "description": "Current workflow execution status"
+    },
+    "currentPhase": {
+      "type": ["string", "null"],
+      "description": "ID of the currently executing phase (null if not executing)"
+    },
+    "currentPhaseStartTime": {
+      "type": ["number", "null"],
+      "description": "Timestamp when current phase started (ms since epoch)"
+    },
+    "startTime": {
+      "type": "number",
+      "description": "Workflow start timestamp (ms since epoch)",
+      "minimum": 0
+    },
+    "endTime": {
+      "type": ["number", "null"],
+      "description": "Workflow end timestamp (ms since epoch), null if not finished"
+    },
+    "pausedAt": {
+      "type": ["number", "null"],
+      "description": "Timestamp when workflow was paused (ms since epoch)"
+    },
+    "resumedAt": {
+      "type": ["number", "null"],
+      "description": "Timestamp when workflow was resumed (ms since epoch)"
+    },
+    "completedPhases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of phase IDs that have been completed successfully",
+      "uniqueItems": true
+    },
+    "skippedPhases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of phase IDs that were skipped",
+      "uniqueItems": true
+    },
+    "failedPhases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of phase IDs that failed",
+      "uniqueItems": true
+    },
+    "results": {
+      "type": "object",
+      "description": "Phase execution results (phase ID → result object)",
+      "additionalProperties": true
+    },
+    "error": {
+      "type": ["object", "null"],
+      "description": "Error details if workflow failed",
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "Phase ID where error occurred"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "stack": {
+          "type": "string",
+          "description": "Error stack trace (if available)"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "When error occurred (ms since epoch)"
+        },
+        "recoverable": {
+          "type": "boolean",
+          "description": "Whether workflow can be resumed"
+        }
+      },
+      "required": ["phase", "message", "timestamp", "recoverable"]
+    },
+    "retries": {
+      "type": "object",
+      "description": "Phase retry counts (phase ID → count)",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["nexusVersion", "pluginsUsed", "totalPhases"],
+      "properties": {
+        "nexusVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Nexus version used for this workflow",
+          "examples": ["2.0.0"]
+        },
+        "pluginsUsed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Plugins used in this workflow",
+          "examples": [["ald-system", "superpowers", "mcp-supabase"]]
+        },
+        "mcpsUsed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "MCPs used in this workflow",
+          "examples": [["supabase", "chrome-devtools"]]
+        },
+        "totalPhases": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Total number of phases in workflow"
+        },
+        "estimatedDuration": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Estimated workflow duration (minutes)"
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "description": "State checkpoints for rollback capability",
+      "items": {
+        "type": "object",
+        "required": ["id", "phase", "timestamp"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique checkpoint ID",
+            "examples": ["checkpoint-1730207096000"]
+          },
+          "phase": {
+            "type": "string",
+            "description": "Phase ID at this checkpoint"
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "When checkpoint was created (ms since epoch)"
+          },
+          "filesSnapshot": {
+            "type": "array",
+            "description": "Snapshot of file states",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "File path"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["M", "A", "D", "R", "C"],
+                  "description": "Git status (M=modified, A=added, D=deleted, R=renamed, C=copied)"
+                },
+                "contentHash": {
+                  "type": "string",
+                  "description": "File content hash (for verification)"
+                },
+                "timestamp": {
+                  "type": "number",
+                  "description": "When snapshot was taken"
+                }
+              }
+            }
+          },
+          "databaseSnapshot": {
+            "type": ["object", "null"],
+            "description": "Database state snapshot (for migration workflows)"
+          }
+        }
+      }
+    },
+    "rollbackAvailable": {
+      "type": "boolean",
+      "description": "Whether rollback is possible for this workflow"
+    }
+  }
+}
