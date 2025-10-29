@@ -17,10 +17,12 @@ When `/nexus-setup` is invoked, execute this installation workflow:
 
 This will install Nexus dependencies:
 ✅ ALD System (already installed with HMC Technologies marketplace)
-✅ Superpowers Marketplace plugins
-📋 MCP setup instructions (Supabase, Chrome DevTools, GitHub, Episodic Memory)
+✅ Superpowers Marketplace (via /plugin marketplace add)
+✅ Chrome DevTools MCP (via claude mcp add)
+✅ Supabase MCP (via claude mcp add)
+📋 Optional: GitHub MCP, Episodic Memory
 
-**Estimated time**: 3-5 minutes
+**Estimated time**: 2-3 minutes
 
 Ready to proceed? (yes/no)
 ```
@@ -29,29 +31,30 @@ Wait for user confirmation before continuing.
 
 ---
 
-### Step 2: Install Superpowers
+### Step 2: Install Superpowers Marketplace
 
-**Action**: Use SlashCommand tool to install from marketplace
+**Action**: Install Superpowers via marketplace command
 
-```typescript
-// Install main Superpowers plugin
-SlashCommand("/plugin install superpowers@superpowers-marketplace");
-
-// Install Superpowers Dev
-SlashCommand("/plugin install superpowers@superpowers-dev");
+```bash
+/plugin marketplace add obra/superpowers
 ```
+
+**This installs**:
+- All Superpowers skills and workflows
+- Includes both superpowers and superpowers-dev
 
 **Wait for installation to complete** before proceeding.
 
 **Progress output**:
 ```markdown
-📦 Installing Superpowers...
+📦 Installing Superpowers Marketplace...
 
-⚙️ Installing superpowers@superpowers-marketplace...
-✅ Superpowers installed
+⚙️ Adding marketplace: obra/superpowers...
+✅ Superpowers Marketplace installed
 
-⚙️ Installing superpowers@superpowers-dev...
-✅ Superpowers Dev installed
+Installed components:
+✅ superpowers (structured workflows)
+✅ superpowers-dev (development workflows)
 
 Superpowers ready! ✅
 ```
@@ -63,114 +66,115 @@ If installation fails:
 
 **Manual installation**:
 1. Open Claude Code
-2. Run: /plugin install superpowers@superpowers-marketplace
-3. Run: /plugin install superpowers@superpowers-dev
+2. Run: /plugin marketplace add obra/superpowers
 
 Then re-run: /nexus-setup to continue
 ```
 
 ---
 
-### Step 3: MCP Setup Instructions
+### Step 3: Install MCPs
 
-**Action**: Display MCP installation instructions (cannot auto-install - requires Claude Desktop app config)
+**Action**: Install MCP servers using `claude mcp add` commands
 
+MCPs (Model Context Protocol) provide external tool integrations for database, browser, and other operations.
+
+---
+
+#### 3.1: Install Chrome DevTools MCP
+
+**Command**:
+```bash
+claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
+```
+
+**What it does**:
+- Installs Chrome DevTools MCP for browser automation
+- Enables UI validation, E2E testing, performance audits
+
+**Progress output**:
 ```markdown
-📋 **MCP Setup Instructions**
+⚙️ Installing Chrome DevTools MCP...
+✅ Chrome DevTools MCP installed successfully
 
-MCPs (Model Context Protocol) provide external tool integrations.
-**Note**: MCPs require configuration in Claude Desktop app settings.
+Available tools:
+- mcp__chrome-devtools__navigate
+- mcp__chrome-devtools__click
+- mcp__chrome-devtools__screenshot
+- mcp__chrome-devtools__evaluate
 
----
-
-### ⭐ Recommended MCPs
-
-#### 1. Supabase MCP (Database Operations)
-**What**: Database migrations, security audits, type generation
-**Install**:
-1. Add to Claude Desktop config (`~/.config/Claude/claude_desktop_config.json`):
-   ```json
-   {
-     "mcpServers": {
-       "supabase": {
-         "command": "npx",
-         "args": ["-y", "@supabase/mcp"],
-         "env": {
-           "SUPABASE_ACCESS_TOKEN": "your-token-here"
-         }
-       }
-     }
-   }
-   ```
-2. Get access token: https://supabase.com/dashboard/account/tokens
-3. Restart Claude Desktop
-
-**Nexus Integration**: Auto-injected for database/migration tasks (Policy 12.1)
-
----
-
-#### 2. Chrome DevTools MCP (UI Validation)
-**What**: UI validation, E2E testing, performance audits
-**Install**:
-1. Install plugin: `/plugin install superpowers-chrome@superpowers-marketplace`
-2. Chrome DevTools MCP auto-configured
+Chrome DevTools MCP ready! ✅
+```
 
 **Nexus Integration**: MANDATORY for UI changes (Policy 12.2)
 
 ---
 
-#### 3. GitHub MCP (Code Operations)
-**What**: Issues, PRs, code review, repository search
-**Install**:
-1. Add to Claude Desktop config:
-   ```json
-   {
-     "mcpServers": {
-       "github": {
-         "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-github"],
-         "env": {
-           "GITHUB_PERSONAL_ACCESS_TOKEN": "your-token-here"
-         }
-       }
-     }
-   }
-   ```
-2. Create GitHub token: https://github.com/settings/tokens (scopes: repo, read:org)
-3. Restart Claude Desktop
+#### 3.2: Install Supabase MCP
 
-**Nexus Integration**: Optional, suggested for PR/issue tasks
-
----
-
-#### 4. Episodic Memory MCP (Context Recall)
-**What**: Search past conversations for patterns and context
-**Install**:
-1. Already included in Superpowers marketplace
-2. No additional setup needed
-
-**Nexus Integration**: Optional, suggested when user mentions "past" or "similar"
-
----
-
-### Verification
-
-After installing MCPs, verify with:
+**Command**:
 ```bash
-# List available MCP tools
-/tools
+claude mcp add --transport http supabase "https://mcp.supabase.com/mcp"
+```
 
-# Should see tools like:
-# - mcp__supabase__*
-# - mcp__plugin_superpowers-chrome_chrome__*
-# - mcp__github__*
-# - mcp__plugin_episodic-memory_episodic-memory__*
+**Before running**: You'll need a Supabase access token.
+Get one here: https://supabase.com/dashboard/account/tokens
+
+**What it does**:
+- Installs Supabase MCP for database operations
+- Enables migrations, security audits, type generation
+
+**Progress output**:
+```markdown
+⚙️ Installing Supabase MCP...
+✅ Supabase MCP installed successfully
+
+Available tools:
+- mcp__supabase__execute_sql
+- mcp__supabase__apply_migration
+- mcp__supabase__list_tables
+- mcp__supabase__get_advisors
+
+Supabase MCP ready! ✅
+```
+
+**Nexus Integration**: Auto-injected for database/migration tasks (Policy 12.1)
+
+#### 3.3: Verify MCP Installation
+
+**Command**:
+```bash
+/tools
+```
+
+**Expected output**:
+```markdown
+🔍 Verifying MCPs...
+
+Available MCP tools:
+✅ mcp__chrome-devtools__* (5 tools)
+✅ mcp__supabase__* (15 tools)
+
+MCPs verified! ✅
 ```
 
 ---
 
-**Need help?** See full MCP setup guide: `docs/mcp-setup/`
+#### 3.4: Optional MCPs
+
+**GitHub MCP** (for PR/issue operations):
+```bash
+# Requires GitHub token from: https://github.com/settings/tokens
+claude mcp add github npx @modelcontextprotocol/server-github
 ```
+
+**Episodic Memory MCP** (already included in Superpowers):
+- No additional setup needed
+- Auto-available after Superpowers installation
+
+**Nexus Integration**:
+- GitHub: Optional, suggested for PR/issue tasks
+- Episodic Memory: Optional, suggested when user mentions "past" or "similar"
 
 ---
 
@@ -281,21 +285,22 @@ try {
 ## Installation Summary
 
 ✅ ALD System (already installed with marketplace)
-✅ Superpowers Marketplace plugins
+✅ Superpowers Marketplace
+✅ Chrome DevTools MCP
+✅ Supabase MCP
 ✅ Nexus orchestrator
 ✅ Configuration files created
-📋 MCP setup instructions provided
+📋 Optional MCPs available (GitHub, Episodic Memory)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## Next Steps
 
-### 1. Configure MCPs (Optional but Recommended)
-Follow instructions above to setup:
-- Supabase MCP (database operations)
-- Chrome DevTools MCP (UI validation)
-- GitHub MCP (code operations)
-- Episodic Memory MCP (context recall)
+### 1. Optional MCPs
+Already installed Chrome DevTools and Supabase.
+If needed, install:
+- GitHub MCP: `claude mcp add github npx @modelcontextprotocol/server-github`
+- Episodic Memory: Already in Superpowers
 
 ### 2. Customize Configuration
 Edit your preferences:
