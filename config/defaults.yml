@@ -1,0 +1,128 @@
+# HMC Technologies Marketplace - Global Configuration
+# Default settings for Nexus orchestrator and marketplace behavior
+
+version: "2.0.0"
+
+# Language and Localization
+locale:
+  default: "pt-BR"              # Default language (pt-BR | en-US)
+  fallback: "en-US"             # Fallback if translation missing
+  auto_detect: true             # Auto-detect from system locale
+
+# Nexus Orchestrator Settings
+nexus:
+  default_workflow: "feature-quick"  # Default when ambiguous
+  auto_confirm_simple_tasks: false   # Auto-execute simple tasks without confirmation
+  show_workflow_details: true        # Display workflow phases before execution
+  enable_phase_timing: true          # Show duration for each phase
+
+  # Workflow preferences
+  workflows:
+    feature-full:
+      skip_phases: []                # Never skip phases (recommended)
+      auto_brainstorm: true          # Always include brainstorming
+
+    bugfix:
+      skip_phases: ["brainstorm"]    # Fast bugfixes without brainstorm
+      auto_execute: false            # Require confirmation
+
+    hotfix:
+      skip_phases: ["brainstorm", "planning"]  # Emergency mode
+      auto_execute: true             # Execute immediately
+      max_duration_minutes: 10       # Hard timeout for hotfixes
+
+# Plugin Configuration
+plugins:
+  # ALD System
+  ald:
+    enabled: true
+    always_use_policies: true        # Enforce policies in all workflows
+    auto_load_memory: true           # Load project context automatically
+    auto_curator: true               # Learn patterns after task completion
+    sprint_validation: true          # Validate sprint scope
+    policy_enforcement: "strict"     # strict | warning | disabled
+
+  # Superpowers
+  superpowers:
+    enabled: true
+    skip_brainstorm_for_simple: true # Skip brainstorming for small tasks
+    auto_code_review: true           # Always review after implementation
+    tdd_by_default: false            # Use TDD workflow by default
+
+  # MCPs (Model Context Protocol servers)
+  mcps:
+    supabase:
+      enabled: true
+      auto_security_audit: true      # Run security advisors after migrations
+
+    github:
+      enabled: true
+      auto_link_issues: true         # Link commits to issues
+
+    chrome:
+      enabled: true
+      auto_performance_audit: false  # Don't auto-run Lighthouse (manual only)
+
+# Output and Display
+output:
+  verbose: false                     # Verbose logging
+  show_policy_ids: true              # Display policy IDs in reviews
+  use_emojis: true                   # Use emojis in output
+  show_timestamps: false             # Show timestamps in phase execution
+  color_scheme: "auto"               # auto | dark | light
+
+# Performance and Limits
+performance:
+  max_phase_timeout_ms: 600000       # 10 minutes per phase
+  max_workflow_duration_minutes: 120 # 2 hours total workflow limit
+  enable_parallel_execution: false   # Experimental: parallel phase execution
+  cache_workflow_results: true       # Cache workflow results for retry
+
+# Git Integration
+git:
+  auto_commit: false                 # Don't auto-commit (user confirms)
+  commit_message_style: "conventional" # conventional | simple
+  auto_push: false                   # Never auto-push (user decides)
+  require_clean_working_tree: false  # Allow commits with untracked files
+
+# Notifications
+notifications:
+  enabled: false                     # Desktop notifications (future)
+  on_workflow_complete: false        # Notify when workflow completes
+  on_phase_failure: false            # Notify on phase failures
+
+# Developer Settings
+developer:
+  debug_mode: false                  # Enable debug logging
+  dry_run: false                     # Simulate without executing
+  save_workflow_state: true          # Save state for resume/rollback
+  log_to_file: false                 # Log to file (future)
+
+# Marketplace Metadata
+marketplace:
+  name: "HMC Technologies Marketplace"
+  version: "2.0.0"
+  repository: "https://github.com/dirgogoo/hmc-marketplace"
+  organization: "HMC Technologies"
+
+  # Auto-update settings
+  auto_update:
+    enabled: false                   # Auto-check for updates
+    frequency_days: 7                # Check every 7 days
+    notify_only: true                # Only notify, don't auto-install
+
+# Skill Discovery
+skills:
+  auto_discover: true                # Auto-discover skills in skills/
+  enabled_skills: "all"              # all | [list of skill names]
+  disable_list: []                   # Skills to explicitly disable
+
+# Command Aliases (future feature)
+aliases:
+  "/n": "/nexus"                     # Short alias for /nexus
+  "/review": "/nexus review"         # Quick review command
+
+# Integration Defaults
+integrations:
+  prefer_local_config: true          # Prefer project-specific over global
+  merge_strategy: "override"         # override | merge | append

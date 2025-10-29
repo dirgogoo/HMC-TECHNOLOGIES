@@ -1,0 +1,229 @@
+# HMC Technologies Marketplace - English (US) Translations
+# Interface messages and texts for en-US locale
+
+locale: "en-US"
+name: "English (United States)"
+
+# Nexus Orchestrator Messages
+nexus:
+  welcome: "Welcome to Nexus Orchestrator"
+  analyzing: "Analyzing your request..."
+  workflow_selected: "Workflow selected"
+  workflow_executing: "Executing workflow"
+  workflow_complete: "Workflow completed successfully"
+  workflow_failed: "Workflow failed"
+
+  # Intent detection
+  intent:
+    feature: "Feature development"
+    bugfix: "Bug fix"
+    hotfix: "Emergency hotfix"
+    refactor: "Code refactoring"
+    review: "Code review"
+    spike: "Investigation/research"
+    migration: "Database migration"
+    documentation: "Documentation"
+    performance: "Performance optimization"
+
+  # Complexity
+  complexity:
+    small: "Small"
+    medium: "Medium"
+    large: "Large"
+
+  # Workflow phases
+  phases:
+    loading_context: "Loading project context"
+    brainstorming: "Refining requirements"
+    planning: "Creating implementation plan"
+    finding_policies: "Identifying relevant policies"
+    executing: "Implementing code"
+    validating: "Validating implementation"
+    reviewing: "Reviewing code"
+    learning: "Capturing learned patterns"
+
+  # Confirmation prompts
+  prompts:
+    confirm_workflow: "How would you like to proceed?"
+    options:
+      execute_as_is: "Execute as-is (recommended)"
+      skip_phases: "Skip specific phases"
+      switch_workflow: "Switch workflow"
+      customize: "Customize workflow"
+
+# ALD System Messages
+ald:
+  memory:
+    loading: "Loading project memory..."
+    loaded: "Context loaded"
+    not_found: "Project memory not found"
+    creating: "Creating new project context"
+
+  policies:
+    checking: "Checking policies..."
+    found: "policies identified"
+    compliance: "Policy compliance"
+    violations: "violations found"
+
+  sprint:
+    active: "Sprint active"
+    inactive: "No active sprint"
+    in_scope: "Task within scope"
+    out_of_scope: "Task out of sprint scope"
+
+  tester:
+    running: "Running tests..."
+    passed: "All tests passed"
+    failed: "tests failed"
+
+  reviewer:
+    analyzing: "Analyzing code..."
+    ready: "Code ready for production"
+    needs_work: "Code needs improvement"
+
+  curator:
+    learning: "Learning patterns..."
+    patterns_captured: "patterns captured"
+
+# Superpowers Messages
+superpowers:
+  brainstorm:
+    starting: "Starting brainstorming..."
+    refining: "Refining requirements..."
+    complete: "Requirements refined"
+
+  plan:
+    creating: "Creating implementation plan..."
+    tasks_identified: "tasks identified"
+    ready: "Plan ready for execution"
+
+  execute:
+    starting: "Executing plan..."
+    batch: "Batch"
+    review_checkpoint: "Review checkpoint"
+
+# Workflow-specific Messages
+workflows:
+  feature_full:
+    name: "Full Feature Development"
+    description: "Includes brainstorming, planning, and complete execution"
+
+  feature_quick:
+    name: "Quick Feature Development"
+    description: "For medium-complexity features with clear requirements"
+
+  bugfix:
+    name: "Bug Fix"
+    description: "Quick bug fix with validation"
+
+  hotfix:
+    name: "Emergency Hotfix"
+    description: "Urgent production issue fix (< 10 min)"
+
+  spike:
+    name: "Investigation/Spike"
+    description: "Technical research and investigation"
+
+  migration:
+    name: "Database Migration"
+    description: "Schema migration with security validation"
+
+  documentation:
+    name: "Documentation"
+    description: "Create READMEs, API docs, guides"
+
+  performance:
+    name: "Performance Optimization"
+    description: "Performance analysis and optimization with metrics"
+
+  refactor:
+    name: "Refactoring"
+    description: "Improve existing code while maintaining functionality"
+
+  code_review:
+    name: "Code Review"
+    description: "Review without implementation"
+
+# Error Messages
+errors:
+  workflow_not_found: "Workflow not found"
+  phase_failed: "Phase failed"
+  plugin_not_available: "Plugin not available"
+  invalid_configuration: "Invalid configuration"
+  timeout: "Timeout exceeded"
+
+  # Recovery options
+  recovery:
+    retry: "Retry"
+    skip: "Skip phase"
+    abort: "Abort workflow"
+    rollback: "Rollback changes"
+
+# Success Messages
+success:
+  task_complete: "Task completed successfully"
+  all_tests_passed: "All tests passed"
+  ready_to_merge: "Ready to merge"
+  policies_followed: "All policies followed"
+
+# Timing
+timing:
+  estimated: "Estimated duration"
+  actual: "Actual duration"
+  minutes: "minutes"
+  seconds: "seconds"
+  hours: "hours"
+
+# Common Actions
+actions:
+  continue: "Continue"
+  cancel: "Cancel"
+  confirm: "Confirm"
+  skip: "Skip"
+  retry: "Retry"
+  abort: "Abort"
+  back: "Back"
+  next: "Next"
+
+# Status Indicators
+status:
+  pending: "Pending"
+  in_progress: "In progress"
+  completed: "Completed"
+  failed: "Failed"
+  skipped: "Skipped"
+  blocked: "Blocked"
+
+# Quality Metrics
+quality:
+  excellent: "Excellent"
+  good: "Good"
+  needs_improvement: "Needs improvement"
+  poor: "Poor"
+
+# Git Messages
+git:
+  committing: "Creating commit..."
+  committed: "Commit created"
+  pushing: "Pushing to remote..."
+  pushed: "Pushed successfully"
+
+# Notifications
+notifications:
+  workflow_started: "Workflow started"
+  workflow_completed: "Workflow completed"
+  phase_completed: "Phase completed"
+  error_occurred: "Error occurred"
+
+# Help and Tips
+help:
+  quick_start: "Quick Start"
+  commands: "Available Commands"
+  workflows: "Available Workflows"
+  examples: "Usage Examples"
+  tips: "Pro Tips"
+
+# Footer
+footer:
+  contract: "CLAUDE.MD ACTIVE"
+  powered_by: "Powered by Nexus v2.0.0 + ALD System"

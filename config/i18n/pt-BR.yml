@@ -1,0 +1,229 @@
+# HMC Technologies Marketplace - Traduções em Português (Brasil)
+# Mensagens e textos da interface para idioma pt-BR
+
+locale: "pt-BR"
+name: "Português (Brasil)"
+
+# Nexus Orchestrator Messages
+nexus:
+  welcome: "Bem-vindo ao Nexus Orchestrator"
+  analyzing: "Analisando sua solicitação..."
+  workflow_selected: "Workflow selecionado"
+  workflow_executing: "Executando workflow"
+  workflow_complete: "Workflow concluído com sucesso"
+  workflow_failed: "Workflow falhou"
+
+  # Intent detection
+  intent:
+    feature: "Desenvolvimento de funcionalidade"
+    bugfix: "Correção de bug"
+    hotfix: "Correção emergencial"
+    refactor: "Refatoração de código"
+    review: "Revisão de código"
+    spike: "Investigação/pesquisa"
+    migration: "Migração de banco de dados"
+    documentation: "Documentação"
+    performance: "Otimização de performance"
+
+  # Complexity
+  complexity:
+    small: "Pequena"
+    medium: "Média"
+    large: "Grande"
+
+  # Workflow phases
+  phases:
+    loading_context: "Carregando contexto do projeto"
+    brainstorming: "Refinando requisitos"
+    planning: "Criando plano de implementação"
+    finding_policies: "Identificando políticas relevantes"
+    executing: "Implementando código"
+    validating: "Validando implementação"
+    reviewing: "Revisando código"
+    learning: "Capturando padrões aprendidos"
+
+  # Confirmation prompts
+  prompts:
+    confirm_workflow: "Como você gostaria de proceder?"
+    options:
+      execute_as_is: "Executar como está (recomendado)"
+      skip_phases: "Pular fases específicas"
+      switch_workflow: "Trocar de workflow"
+      customize: "Personalizar workflow"
+
+# ALD System Messages
+ald:
+  memory:
+    loading: "Carregando memória do projeto..."
+    loaded: "Contexto carregado"
+    not_found: "Memória do projeto não encontrada"
+    creating: "Criando novo contexto de projeto"
+
+  policies:
+    checking: "Verificando políticas..."
+    found: "políticas identificadas"
+    compliance: "Conformidade com políticas"
+    violations: "violações encontradas"
+
+  sprint:
+    active: "Sprint ativo"
+    inactive: "Nenhum sprint ativo"
+    in_scope: "Tarefa dentro do escopo"
+    out_of_scope: "Tarefa fora do escopo do sprint"
+
+  tester:
+    running: "Executando testes..."
+    passed: "Todos os testes passaram"
+    failed: "testes falharam"
+
+  reviewer:
+    analyzing: "Analisando código..."
+    ready: "Código pronto para produção"
+    needs_work: "Código precisa de melhorias"
+
+  curator:
+    learning: "Aprendendo padrões..."
+    patterns_captured: "padrões capturados"
+
+# Superpowers Messages
+superpowers:
+  brainstorm:
+    starting: "Iniciando brainstorming..."
+    refining: "Refinando requisitos..."
+    complete: "Requisitos refinados"
+
+  plan:
+    creating: "Criando plano de implementação..."
+    tasks_identified: "tarefas identificadas"
+    ready: "Plano pronto para execução"
+
+  execute:
+    starting: "Executando plano..."
+    batch: "Lote"
+    review_checkpoint: "Checkpoint de revisão"
+
+# Workflow-specific Messages
+workflows:
+  feature_full:
+    name: "Desenvolvimento Completo de Funcionalidade"
+    description: "Inclui brainstorming, planejamento e execução completa"
+
+  feature_quick:
+    name: "Desenvolvimento Rápido de Funcionalidade"
+    description: "Para funcionalidades de complexidade média com requisitos claros"
+
+  bugfix:
+    name: "Correção de Bug"
+    description: "Correção rápida de bugs com validação"
+
+  hotfix:
+    name: "Correção Emergencial"
+    description: "Correção urgente de problemas em produção (< 10 min)"
+
+  spike:
+    name: "Investigação/Spike"
+    description: "Pesquisa e investigação técnica"
+
+  migration:
+    name: "Migração de Banco de Dados"
+    description: "Migração de schema com validação de segurança"
+
+  documentation:
+    name: "Documentação"
+    description: "Criar READMEs, docs de API, guias"
+
+  performance:
+    name: "Otimização de Performance"
+    description: "Análise e otimização de performance com métricas"
+
+  refactor:
+    name: "Refatoração"
+    description: "Melhorar código existente mantendo funcionalidade"
+
+  code_review:
+    name: "Revisão de Código"
+    description: "Revisão sem implementação"
+
+# Error Messages
+errors:
+  workflow_not_found: "Workflow não encontrado"
+  phase_failed: "Fase falhou"
+  plugin_not_available: "Plugin não disponível"
+  invalid_configuration: "Configuração inválida"
+  timeout: "Tempo limite excedido"
+
+  # Recovery options
+  recovery:
+    retry: "Tentar novamente"
+    skip: "Pular fase"
+    abort: "Abortar workflow"
+    rollback: "Reverter alterações"
+
+# Success Messages
+success:
+  task_complete: "Tarefa concluída com sucesso"
+  all_tests_passed: "Todos os testes passaram"
+  ready_to_merge: "Pronto para merge"
+  policies_followed: "Todas as políticas seguidas"
+
+# Timing
+timing:
+  estimated: "Duração estimada"
+  actual: "Duração real"
+  minutes: "minutos"
+  seconds: "segundos"
+  hours: "horas"
+
+# Common Actions
+actions:
+  continue: "Continuar"
+  cancel: "Cancelar"
+  confirm: "Confirmar"
+  skip: "Pular"
+  retry: "Tentar novamente"
+  abort: "Abortar"
+  back: "Voltar"
+  next: "Próximo"
+
+# Status Indicators
+status:
+  pending: "Pendente"
+  in_progress: "Em progresso"
+  completed: "Concluído"
+  failed: "Falhou"
+  skipped: "Pulado"
+  blocked: "Bloqueado"
+
+# Quality Metrics
+quality:
+  excellent: "Excelente"
+  good: "Bom"
+  needs_improvement: "Precisa melhorias"
+  poor: "Ruim"
+
+# Git Messages
+git:
+  committing: "Criando commit..."
+  committed: "Commit criado"
+  pushing: "Enviando para remoto..."
+  pushed: "Enviado com sucesso"
+
+# Notifications
+notifications:
+  workflow_started: "Workflow iniciado"
+  workflow_completed: "Workflow concluído"
+  phase_completed: "Fase concluída"
+  error_occurred: "Erro ocorreu"
+
+# Help and Tips
+help:
+  quick_start: "Início Rápido"
+  commands: "Comandos Disponíveis"
+  workflows: "Workflows Disponíveis"
+  examples: "Exemplos de Uso"
+  tips: "Dicas Profissionais"
+
+# Footer
+footer:
+  contract: "CLAUDE.MD ATIVO"
+  powered_by: "Powered by Nexus v2.0.0 + ALD System"
