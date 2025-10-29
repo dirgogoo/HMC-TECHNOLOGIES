@@ -1,0 +1,296 @@
+# Example: Enhanced Workflow with MCP Hooks
+# This file demonstrates how workflows are enhanced at runtime with MCP hooks.
+# Original workflows (feature-full.yml, feature-quick.yml, etc.) remain unchanged.
+# The MCP Injector adds mcp_hooks dynamically based on task analysis.
+
+name: "Example Enhanced Workflow"
+description: "Shows how MCP hooks are injected into workflow phases"
+version: "1.0.0"
+
+# ORIGINAL WORKFLOW (from feature-full.yml):
+original_phases:
+  - id: "brainstorm"
+    name: "Brainstorming"
+    plugin: "superpowers"
+    hook: "brainstorm"
+
+  - id: "plan"
+    name: "Planning"
+    plugin: "superpowers"
+    hook: "write-plan"
+
+  - id: "load-context"
+    name: "Load Context"
+    plugin: "ald"
+    hook: "load-memory"
+
+  - id: "execute"
+    name: "TDD Implementation"
+    plugin: "superpowers-dev"
+    hook: "test-driven-development"
+
+  - id: "validate"
+    name: "E2E Validation"
+    plugin: "ald"
+    hook: "tester"
+
+  - id: "review"
+    name: "Code Review"
+    plugin: "ald"
+    hook: "code-reviewer"
+
+---
+
+# ENHANCED WORKFLOW (after MCP injection for task: "implement product listing UI"):
+enhanced_phases:
+  - id: "brainstorm"
+    name: "Brainstorming"
+    plugin: "superpowers"
+    hook: "brainstorm"
+    mcp_hooks: []  # No MCP hooks for this phase
+
+  - id: "plan"
+    name: "Planning"
+    plugin: "superpowers"
+    hook: "write-plan"
+    mcp_hooks: []  # No MCP hooks for this phase
+
+  - id: "load-context"
+    name: "Load Context"
+    plugin: "ald"
+    hook: "load-memory"
+    mcp_hooks:
+      # Optional: Search past conversations for similar implementations
+      - plugin: "mcp-episodic-memory"
+        hook: "recall-patterns"
+        mcp_tools: ["search"]
+        inputs:
+          query: "product listing UI implementation"
+          mode: "semantic"
+        outputs:
+          - "similar_tasks"
+          - "patterns_learned"
+        required: false
+        reason: "Helpful context from past implementations"
+
+  - id: "execute"
+    name: "TDD Implementation"
+    plugin: "superpowers-dev"
+    hook: "test-driven-development"
+    mcp_hooks: []  # No MCP hooks during implementation phase
+
+  - id: "validate"
+    name: "E2E Validation"
+    plugin: "ald"
+    hook: "tester"
+    mcp_hooks:
+      # MANDATORY: UI validation (Policy 12.2)
+      - plugin: "mcp-chrome-devtools"
+        hook: "ui-validation"
+        mcp_tools: ["use_browser"]
+        inputs:
+          target_url: "http://localhost:3000/products"
+          actions: ["take_snapshot", "screenshot"]
+        outputs:
+          - "validation_report"
+          - "screenshot_path"
+          - "console_errors"
+          - "network_errors"
+        required: true
+        reason: "Policy 12.2 - MANDATORY UI validation after any UI changes"
+        failure_mode: "fail_workflow"
+
+      # MANDATORY: Console check (Policy 12.2)
+      - plugin: "mcp-chrome-devtools"
+        hook: "console-check"
+        mcp_tools: ["use_browser"]
+        inputs:
+          target_url: "http://localhost:3000/products"
+        outputs:
+          - "console_messages"
+          - "error_count"
+        required: true
+        reason: "Policy 12.2 - Console must be clean (0 errors)"
+        failure_criteria: "error_count > 0"
+
+      # MANDATORY: Network check (Policy 12.2)
+      - plugin: "mcp-chrome-devtools"
+        hook: "network-check"
+        mcp_tools: ["use_browser"]
+        inputs:
+          target_url: "http://localhost:3000/products"
+        outputs:
+          - "network_requests"
+          - "failed_requests"
+        required: true
+        reason: "Policy 12.2 - Network requests must succeed"
+        failure_criteria: "failed_requests.length > 0"
+
+  - id: "review"
+    name: "Code Review"
+    plugin: "ald"
+    hook: "code-reviewer"
+    mcp_hooks: []  # No MCP hooks for this phase
+
+---
+
+# ANOTHER EXAMPLE: Database migration task
+# Task: "create migration add_users_table with Supabase"
+
+database_migration_phases:
+  - id: "load-context"
+    name: "Load Context"
+    plugin: "ald"
+    hook: "load-memory"
+    mcp_hooks:
+      # Inspect current schema before migration
+      - plugin: "mcp-supabase"
+        hook: "schema-inspection"
+        mcp_tools: ["list_tables", "list_migrations"]
+        inputs:
+          project_id: "${SUPABASE_PROJECT_ID}"
+        outputs:
+          - "tables_list"
+          - "migrations_list"
+        required: false
+
+  - id: "execute"
+    name: "Apply Migration"
+    plugin: "ald"
+    mcp_hooks:
+      # MANDATORY: Use Supabase MCP for migrations (Policy 12.1)
+      - plugin: "mcp-supabase"
+        hook: "database-migration"
+        mcp_tools: ["apply_migration"]
+        inputs:
+          project_id: "${SUPABASE_PROJECT_ID}"
+          migration_name: "add_users_table"
+          migration_sql: |
+            CREATE TABLE users (
+              id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+              email TEXT NOT NULL UNIQUE,
+              created_at TIMESTAMPTZ DEFAULT NOW()
+            );
+        outputs:
+          - "migration_result"
+        required: true
+        reason: "Policy 12.1 - Use Supabase MCP for all database operations"
+
+  - id: "validate"
+    name: "Validation"
+    plugin: "ald"
+    hook: "tester"
+    mcp_hooks:
+      # MANDATORY: Security audit after migration (Policy 12.1)
+      - plugin: "mcp-supabase"
+        hook: "security-audit"
+        mcp_tools: ["get_advisors"]
+        inputs:
+          project_id: "${SUPABASE_PROJECT_ID}"
+          type: "security"
+        outputs:
+          - "security_issues"
+        required: true
+        reason: "Required after database-migration (Policy 12.1 - MUST check RLS policies)"
+        failure_mode: "fail_workflow"
+
+      # Optional: Performance audit
+      - plugin: "mcp-supabase"
+        hook: "performance-audit"
+        mcp_tools: ["get_advisors"]
+        inputs:
+          project_id: "${SUPABASE_PROJECT_ID}"
+          type: "performance"
+        outputs:
+          - "performance_issues"
+        required: false
+
+      # Auto-triggered: Generate TypeScript types
+      - plugin: "mcp-supabase"
+        hook: "type-generation"
+        mcp_tools: ["generate_typescript_types"]
+        inputs:
+          project_id: "${SUPABASE_PROJECT_ID}"
+        outputs:
+          - "typescript_types_content"
+        required: false
+        reason: "Auto-triggered after database-migration"
+
+---
+
+# KEY POINTS:
+
+# 1. Original workflows are NOT modified
+#    - feature-full.yml, feature-quick.yml, bugfix.yml remain unchanged
+#    - They are templates that get enhanced at runtime
+
+# 2. MCP Injector adds mcp_hooks dynamically
+#    - Based on task analysis (keywords, intent, technologies)
+#    - Enforces policies (mandatory vs optional hooks)
+#    - Respects phase dependencies (required_after rules)
+
+# 3. mcp_hooks field structure:
+mcp_hook_structure:
+  plugin: "mcp-plugin-name"
+  hook: "hook-name"
+  mcp_tools: ["tool1", "tool2"]
+  inputs: {}
+  outputs: []
+  required: true/false
+  reason: "Why this hook is injected"
+  failure_mode: "fail_workflow" | "warn" | "skip"
+  failure_criteria: "JavaScript expression"
+
+# 4. Execution flow:
+execution_flow: |
+  1. User: /nexus implement product listing UI
+  2. Nexus analyzes task → keywords: ["implement", "product", "listing", "ui"]
+  3. MCP Injector matches plugins → mcp-chrome-devtools (ui-validation)
+  4. Injector enhances workflow → adds mcp_hooks to "validate" phase
+  5. Workflow executes → main hook + MCP hooks
+  6. If required MCP fails → workflow fails
+  7. If optional MCP fails → warning logged, workflow continues
+
+# 5. User sees enhanced workflow before execution:
+user_confirmation: |
+  🎯 Nexus Analysis: Implement product listing UI
+
+  Workflow: feature-full.yml (TDD by default)
+
+  MCP Hooks Auto-Injected:
+  ✅ Phase "validate":
+     - mcp-chrome-devtools/ui-validation (REQUIRED - Policy 12.2)
+     - mcp-chrome-devtools/console-check (REQUIRED - Policy 12.2)
+     - mcp-chrome-devtools/network-check (REQUIRED - Policy 12.2)
+
+  Options:
+  1. Use as-is (recommended)
+  2. Customize workflow
+
+  Choose: [User confirms]
+
+# 6. During execution, user sees:
+execution_output: |
+  🎯 Phase: E2E Validation
+     → Executing: ald/tester
+     ✅ Main hook passed
+
+     🔌 Executing 3 MCP hooks...
+        → mcp-chrome-devtools/ui-validation
+           ✅ UI snapshot captured
+           ✅ Screenshot saved: ./screenshots/products-2025-10-28.png
+           ✅ Console: 0 errors, 2 warnings
+           ✅ Network: 5 requests, 0 failed
+        ✅ ui-validation passed
+
+        → mcp-chrome-devtools/console-check
+           ✅ Console clean (0 errors)
+        ✅ console-check passed
+
+        → mcp-chrome-devtools/network-check
+           ✅ All network requests succeeded
+        ✅ network-check passed
+
+  ✅ Phase complete: E2E Validation
+
+CLAUDE.MD ATIVO

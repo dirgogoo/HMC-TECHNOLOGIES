@@ -1,0 +1,6 @@
+{
+  "version": "1.1.2",
+  "last_updated": "2025-10-28",
+  "update_check_url": "https://api.github.com/repos/dirgogoo/nexus/releases/latest",
+  "repository": "https://github.com/dirgogoo/nexus"
+}

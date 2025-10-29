@@ -1,0 +1,23 @@
+name: "Code Review Workflow"
+description: "Review-only workflow using ald-code-reviewer (ALD policies + Superpowers review)"
+version: "1.0.0"
+
+triggers:
+  keywords: ["review", "check", "validate", "inspect"]
+
+phases:
+  - id: "load-context"
+    name: "Load Context"
+    plugin: "ald"
+    hook: "load-memory"
+    required: true
+    description: "Load project context for review"
+
+  - id: "review"
+    name: "Comprehensive Review"
+    plugin: "ald"
+    hook: "code-reviewer"
+    required: true
+    description: "Policy validation + Superpowers code review"
+
+estimated_duration: "5-10 minutes"
