@@ -1,30 +1,20 @@
 {
-  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/marketplace-v1.schema.json",
-  "name": "HMC Technologies Marketplace",
-  "version": "2.0.0",
+  "name": "HMC-TECHNOLOGIES",
   "description": "AI-Powered Development System: ALD (Autonomous Learning & Development) + Nexus (Master Workflow Orchestrator)",
-  "author": "dirgogoo",
-  "repository": "https://github.com/dirgogoo/HMC-TECHNOLOGIES",
-  "license": "MIT",
-  "metadata": {
-    "tags": ["workflow", "orchestration", "ai", "development", "automation", "policies", "testing", "learning"],
-    "category": "development-tools"
+  "owner": {
+    "name": "dirgogoo",
+    "email": "dirgogoo@github.com"
   },
-  "structure": "flat",
-  "discovery": {
-    "skills": "auto",
-    "commands": "auto",
-    "hooks": "auto"
-  },
-  "features": {
-    "skills": 9,
-    "workflows": 12,
-    "commands": 1,
-    "hooks": 1,
-    "i18n": true,
-    "locales": ["pt-BR", "en-US"]
-  },
-  "requirements": {
-    "claude_code_version": ">=1.0.0"
-  }
+  "plugins": [
+    {
+      "name": "hmc-marketplace",
+      "description": "Complete marketplace with 9 skills (ALD System + Nexus Orchestrator), 12 workflows, hooks, and i18n support",
+      "version": "2.0.0",
+      "source": "./",
+      "author": {
+        "name": "dirgogoo",
+        "email": "dirgogoo@github.com"
+      }
+    }
+  ]
 }
