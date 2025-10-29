@@ -1,0 +1,261 @@
+name: "Hotfix/Emergency Workflow"
+description: "Ultra-fast workflow for production emergencies requiring immediate fixes (< 10 min response time)"
+version: "2.0.0"
+
+metadata:
+  intendedFor: ["hotfix", "emergency", "production-incident"]
+  complexity: "small"
+  estimatedDuration: 10  # minutes (target: 5-10 min)
+  keywords: ["hotfix", "emergency", "urgent", "production", "critical", "down", "outage"]
+
+defaults:
+  timeout: 120000  # 2 minutes per phase (aggressive)
+  on_failure: "prompt"  # For emergencies, ask user immediately
+  on_timeout: "prompt"
+  max_retries: 1  # Fail fast in emergencies
+
+required:
+  plugins: []  # Minimal requirements - ALD optional
+  mcps: []
+
+triggers:
+  keywords: ["hotfix", "emergency", "urgent", "critical", "production", "down", "outage", "asap"]
+  complexity: ["small"]
+  has_plan: false
+  priority: "CRITICAL"
+
+phases:
+  - id: "load-context-minimal"
+    name: "Load Minimal Context"
+    description: "Quick context load - skip sprint check for emergencies"
+    timeout: 30000  # 30 seconds
+    hooks:
+      - plugin: "ald-system"
+        hook: "load-memory-quick"
+        required: false  # Optional - proceed even if unavailable
+    on_failure: "skip"
+    emergency_mode: true
+    skip_validations:
+      - sprint_check
+      - policy_validation  # Check policies after fix
+
+  - id: "immediate-fix"
+    name: "Implement Immediate Fix"
+    description: "Fastest path to resolution - no planning, no TDD (validate later)"
+    timeout: 300000  # 5 minutes
+    dependencies: []  # No dependencies - start immediately
+    hooks: []
+    on_failure: "abort"  # If fix fails, escalate
+    fix_guidelines: |
+      **EMERGENCY MODE** - Focus on speed:
+
+      1. Identify root cause quickly
+         - Check error logs
+         - Review recent changes
+         - Identify failing component
+
+      2. Implement minimal fix
+         - Smallest change that resolves issue
+         - NO refactoring
+         - NO feature additions
+         - NO "while I'm here" changes
+
+      3. Verify fix locally
+         - Quick smoke test only
+         - Ensure primary issue resolved
+         - Don't break anything else
+
+      **Defer to post-mortem**:
+      - Proper tests (add after fix deployed)
+      - Policy compliance (review after fix)
+      - Code quality (refactor after fix)
+      - Root cause analysis (follow-up ticket)
+
+      **Priority**: Stop the bleeding, then heal properly.
+
+  - id: "smoke-test"
+    name: "Quick Smoke Test"
+    description: "Basic validation only - comprehensive testing comes later"
+    timeout: 180000  # 3 minutes
+    dependencies: ["immediate-fix"]
+    hooks: []
+    on_failure: "abort"
+    smoke_test_checklist: |
+      Minimal validation:
+      ☐ Primary issue resolved? (The thing that was broken now works)
+      ☐ App starts/loads?
+      ☐ No console errors introduced?
+      ☐ Core flows still work?
+      ☐ No obvious regressions?
+
+      **DO NOT**:
+      - Run full test suite (too slow)
+      - Test edge cases (do later)
+      - Validate policies (do later)
+      - Check performance (do later)
+
+      If smoke test passes → proceed to deploy
+
+  - id: "deploy"
+    name: "Deploy Fix (Optional)"
+    description: "Deploy to production if --deploy flag provided"
+    timeout: 180000  # 3 minutes
+    dependencies: ["smoke-test"]
+    hooks: []
+    optional: true
+    conditional: "deploy_flag_set"
+    deploy_checklist: |
+      Before deploying:
+      ☐ Smoke test passed?
+      ☐ Fix tested locally?
+      ☐ Deployment command ready?
+      ☐ Rollback plan identified?
+
+      Deploy methods (fastest first):
+      1. Direct deployment (if configured)
+      2. Manual deployment commands
+      3. CI/CD pipeline (if automated)
+
+      After deployment:
+      ☐ Verify fix in production
+      ☐ Monitor error logs
+      ☐ Confirm incident resolved
+
+  - id: "post-mortem-ticket"
+    name: "Create Post-Mortem Follow-up"
+    description: "Document incident and create follow-up ticket for proper fix"
+    timeout: 180000  # 3 minutes
+    dependencies: ["smoke-test"]
+    hooks: []
+    on_failure: "skip"  # Don't block on ticket creation
+    post_mortem_template: |
+      ## Hotfix Post-Mortem
+
+      **Incident**:
+      - Date/Time: [timestamp]
+      - Severity: [Critical/High/Medium]
+      - Impact: [description]
+      - Duration: [how long was it broken]
+
+      **Immediate Fix Applied**:
+      - Description: [what was changed]
+      - Files Modified: [list]
+      - Deployed: [Yes/No]
+      - Deployment Time: [timestamp]
+
+      **Root Cause** (preliminary):
+      - [Brief explanation]
+      - [Why it wasn't caught earlier]
+
+      **Follow-up Actions Required**:
+      1. Add proper tests for this scenario
+      2. Validate against ALD policies
+      3. Refactor if needed (code quality)
+      4. Root cause analysis (full investigation)
+      5. Prevent recurrence (process/tooling improvements)
+
+      **Follow-up Ticket**:
+      Create a ticket with these tasks and link to this hotfix commit.
+
+      **Lessons Learned**:
+      - [What went well]
+      - [What could be improved]
+      - [How to prevent similar issues]
+
+  - id: "alert-team"
+    name: "Team Notification (Optional)"
+    description: "Notify team about hotfix deployment"
+    timeout: 60000  # 1 minute
+    dependencies: ["post-mortem-ticket"]
+    hooks: []
+    optional: true
+    on_failure: "skip"
+    notification_template: |
+      🚨 **Hotfix Deployed**
+
+      **Issue**: [brief description]
+      **Status**: RESOLVED
+      **Deployed**: [timestamp]
+      **Post-mortem**: [link to ticket]
+
+      Please monitor production for any issues.
+
+workflow_notes: |
+  **When to use Hotfix Workflow**:
+  - Production outage or critical bug
+  - User-blocking issue requiring immediate fix
+  - Security vulnerability needing emergency patch
+  - Data corruption requiring urgent intervention
+  - Response time requirement: < 10 minutes
+
+  **When NOT to use**:
+  - Non-critical bugs → use bugfix workflow
+  - Feature requests → use feature workflow
+  - Technical debt → use refactor workflow
+  - Performance issues → use performance workflow
+
+  **Philosophy**:
+  "Stop the bleeding first, then heal properly"
+
+  1. **During hotfix**: Focus on SPEED
+     - Minimal fix that resolves immediate issue
+     - Skip normal quality gates temporarily
+     - Deploy as fast as safely possible
+
+  2. **After hotfix**: Focus on QUALITY
+     - Create follow-up ticket for proper fix
+     - Add tests that would've caught this
+     - Refactor if needed
+     - Root cause analysis
+     - Process improvements
+
+  **Trade-offs Accepted**:
+  - ❌ No TDD (add tests later)
+  - ❌ No policy validation (check later)
+  - ❌ No planning phase (fix directly)
+  - ❌ No comprehensive testing (smoke test only)
+  - ❌ No code review (review after deployment)
+  - ❌ Technical debt acceptable (pay down later)
+
+  **Non-Negotiable**:
+  - ✅ Smoke test must pass
+  - ✅ Post-mortem ticket must be created
+  - ✅ No "while I'm here" changes
+  - ✅ Rollback plan identified
+
+success_criteria:
+  - Primary issue resolved (smoke test passes)
+  - Fix deployed (if --deploy flag used)
+  - Post-mortem ticket created
+  - Team notified (if applicable)
+  - Follow-up actions documented
+
+failure_criteria:
+  - Smoke test fails
+  - Fix introduces new critical bug
+  - Unable to deploy within time box
+
+escalation_path: |
+  If hotfix fails or is insufficient:
+  1. Rollback to previous version
+  2. Escalate to senior engineer
+  3. Consider alternative mitigation (e.g., feature flag off)
+  4. Communicate status to stakeholders
+
+estimated_times:
+  load_context: "30 seconds"
+  immediate_fix: "3-5 minutes"
+  smoke_test: "1-2 minutes"
+  deploy: "1-2 minutes"
+  post_mortem: "2-3 minutes"
+  total: "8-13 minutes"
+
+command_examples: |
+  # Basic hotfix
+  /nexus hotfix production login broken
+
+  # Hotfix with auto-deploy
+  /nexus hotfix --deploy payment processing failing
+
+  # Hotfix with notification
+  /nexus hotfix --deploy --notify checkout page 500 error

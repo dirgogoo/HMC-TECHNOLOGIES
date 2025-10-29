@@ -1,0 +1,202 @@
+name: "Spike/Exploration Workflow"
+description: "Research and exploration workflow for investigating new technologies, architectures, or feasibility without implementation"
+version: "2.0.0"
+
+metadata:
+  intendedFor: ["spike", "exploration", "research"]
+  complexity: "small"
+  estimatedDuration: 30  # minutes
+  keywords: ["research", "investigate", "explore", "poc", "feasibility", "spike", "learn"]
+
+defaults:
+  timeout: 300000  # 5 minutes per phase
+  on_failure: "prompt"
+  on_timeout: "prompt"
+  max_retries: 2
+
+required:
+  plugins: ["ald-system"]
+  mcps: []  # Optional: episodic-memory if "remember" keyword present
+
+triggers:
+  keywords: ["research", "investigate", "explore", "spike", "feasibility", "poc", "learn about"]
+  complexity: ["small", "medium"]
+  has_plan: false
+
+phases:
+  - id: "load-context"
+    name: "Load Project Context"
+    description: "Load memory, tech stack, past explorations"
+    timeout: 60000  # 1 minute
+    hooks:
+      - plugin: "ald-system"
+        hook: "load-memory"
+        required: true
+    on_failure: "abort"
+
+  - id: "recall-patterns"
+    name: "Recall Similar Explorations"
+    description: "Check if similar spikes were done before (optional)"
+    timeout: 120000  # 2 minutes
+    hooks:
+      - plugin: "mcp-episodic-memory"
+        hook: "recall-patterns"
+        required: false
+    skip_if_mcp_unavailable: true
+    optional: true
+    on_failure: "skip"
+
+  - id: "define-questions"
+    name: "Define Research Questions"
+    description: "What are we trying to learn? What questions need answers?"
+    timeout: 180000  # 3 minutes
+    dependencies: ["load-context"]
+    hooks: []
+    manual_task: |
+      Define the research questions:
+      1. What is the primary goal of this exploration?
+      2. What specific questions need answers?
+      3. What criteria will determine success/failure?
+      4. What's the time box for this spike?
+
+      Document these questions before proceeding.
+
+  - id: "exploration"
+    name: "Explore & Experiment"
+    description: "Research, experiment, read docs, test concepts"
+    timeout: 900000  # 15 minutes
+    dependencies: ["define-questions"]
+    hooks: []
+    exploration_guidelines: |
+      During exploration:
+      - Read documentation from official sources
+      - Experiment with code snippets (don't commit)
+      - Test hypotheses
+      - Document findings as you go
+      - Note pros/cons of each approach
+      - Track time spent per direction
+
+      Remember: This is exploration, not implementation.
+      Goal is learning and decision-making, not production code.
+
+  - id: "document-findings"
+    name: "Document Findings"
+    description: "Summarize learnings, alternatives explored, recommendations"
+    timeout: 480000  # 8 minutes
+    dependencies: ["exploration"]
+    hooks: []
+    required_sections: |
+      Document these sections:
+
+      ## Research Questions (from define-questions phase)
+      [List questions from earlier]
+
+      ## Alternatives Explored
+      ### Alternative 1: [Name]
+      - Description
+      - Pros
+      - Cons
+      - Code examples (if applicable)
+      - References/Links
+
+      ### Alternative 2: [Name]
+      ...
+
+      ## Findings & Insights
+      - Key learnings
+      - Surprises or unexpected discoveries
+      - Technical constraints or limitations
+      - Integration considerations
+
+      ## Recommendation
+      - Recommended approach (if any)
+      - Reasoning
+      - Next steps if moving forward
+      - Open questions requiring more research
+
+      ## Time Spent
+      - Total: [X] minutes
+      - Breakdown by activity
+
+  - id: "learning-capture"
+    name: "Capture Learnings"
+    description: "Save learnings to ALD memory for future reference"
+    timeout: 180000  # 3 minutes
+    dependencies: ["document-findings"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "curator"
+        required: true
+    capture_items: |
+      Capture to ALD memory:
+      - New technologies/libraries explored
+      - Decision criteria used
+      - Trade-offs identified
+      - Recommended patterns
+      - Anti-patterns to avoid
+
+  - id: "recommendations-report"
+    name: "Generate Recommendations Report"
+    description: "Create actionable next steps based on findings"
+    timeout: 180000  # 3 minutes
+    dependencies: ["document-findings", "learning-capture"]
+    hooks: []
+    report_template: |
+      ## Spike Complete: [Topic]
+
+      **Status**: [Success / Needs More Research / Not Feasible]
+
+      **Quick Summary**: [1-2 sentence summary]
+
+      **Recommendation**: [Go / No-Go / More Research Needed]
+
+      **If GO**:
+      - Suggested workflow: [feature-full / feature-quick / custom]
+      - Estimated effort: [hours/days]
+      - Prerequisites: [list]
+      - Key risks: [list]
+
+      **If NO-GO**:
+      - Reasons: [list]
+      - Alternative approaches: [list]
+
+      **If MORE RESEARCH**:
+      - Additional questions: [list]
+      - Recommended follow-up spike: [description]
+
+      **Next Steps**:
+      1. [Action item]
+      2. [Action item]
+      3. [Action item]
+
+      **Documentation Location**: [path to findings doc]
+
+workflow_notes: |
+  **When to use Spike Workflow**:
+  - Investigating new libraries or frameworks
+  - Evaluating architecture options
+  - Proof-of-concept experiments
+  - Feasibility studies
+  - Learning new technologies
+  - Comparing alternatives before implementation
+
+  **When NOT to use**:
+  - If you already know the approach → use feature workflow
+  - For production implementation → spike first, then feature workflow
+  - For bug investigation → use bugfix workflow
+
+  **Output**:
+  - Documentation of findings (no production code)
+  - Recommendation for next steps
+  - Captured learnings in ALD memory
+
+  **Time Box**:
+  - Typical: 20-40 minutes
+  - Maximum: 2 hours (create follow-up spike if needed)
+
+success_criteria:
+  - Research questions answered
+  - Findings documented
+  - Recommendation provided
+  - Learnings captured in ALD memory
+  - Next steps clearly defined

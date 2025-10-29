@@ -1,0 +1,68 @@
+name: "superpowers-dev"
+description: "Advanced Superpowers skills for debugging, TDD, and quality engineering"
+version: "1.0.0"
+
+hooks:
+  - name: "systematic-debugging"
+    description: "4-phase debugging framework (root cause → pattern → hypothesis → implementation)"
+    skill_name: "superpowers-dev:systematic-debugging"
+    inputs: ["bug_description", "error_details"]
+    outputs: ["root_cause", "fix_implementation"]
+    phases:
+      - "root_cause_investigation"
+      - "pattern_analysis"
+      - "hypothesis_testing"
+      - "implementation"
+
+  - name: "test-driven-development"
+    description: "Red-Green-Refactor TDD cycle"
+    skill_name: "superpowers-dev:test-driven-development"
+    inputs: ["feature_spec"]
+    outputs: ["tests", "implementation"]
+    cycle:
+      - "red: write failing test"
+      - "green: minimal implementation"
+      - "refactor: clean up"
+
+  - name: "root-cause-tracing"
+    description: "Trace bugs backward through call stack to original trigger"
+    skill_name: "superpowers-dev:root-cause-tracing"
+    inputs: ["error_stack", "symptoms"]
+    outputs: ["original_trigger", "fix_location"]
+
+  - name: "defense-in-depth"
+    description: "Add validation at multiple layers (entry, business, environment, debug)"
+    skill_name: "superpowers-dev:defense-in-depth"
+    inputs: ["bug_fixed", "data_flow"]
+    outputs: ["validation_layers"]
+    layers:
+      - "entry_point_validation"
+      - "business_logic_validation"
+      - "environment_guards"
+      - "debug_logging"
+
+  - name: "subagent-driven-development"
+    description: "Execute plan with fresh subagent per task + code review between tasks"
+    skill_name: "superpowers-dev:subagent-driven-development"
+    inputs: ["plan"]
+    outputs: ["implementation_complete"]
+
+  - name: "verification-before-completion"
+    description: "Run verification commands before claiming success"
+    skill_name: "superpowers-dev:verification-before-completion"
+    inputs: ["claims"]
+    outputs: ["verified_evidence"]
+
+  - name: "using-git-worktrees"
+    description: "Create isolated git worktrees for feature development"
+    skill_name: "superpowers-dev:using-git-worktrees"
+    inputs: ["feature_name"]
+    outputs: ["worktree_path"]
+
+capabilities:
+  - "systematic-debugging"
+  - "test-driven-development"
+  - "root-cause-analysis"
+  - "defense-in-depth-validation"
+  - "quality-engineering"
+  - "subagent-coordination"

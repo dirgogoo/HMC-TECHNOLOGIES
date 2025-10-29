@@ -1,0 +1,33 @@
+# Nexus Default Configuration
+
+# Default workflow when intent is ambiguous
+default_workflow: "feature-quick"
+
+# Plugin settings
+plugins:
+  ald:
+    always_use_policies: true
+    auto_curator_after_completion: true
+    sprint_check_mandatory: true
+
+  superpowers:
+    default_model: "sonnet"
+    auto_brainstorm_threshold: "large"  # Only auto-brainstorm for large tasks
+
+# Workflow behavior
+workflows:
+  auto_select: true  # Automatically select workflow based on intent
+  allow_customization: true  # Allow user to customize before execution
+  confirm_before_execute: true  # Ask user confirmation before starting
+
+# Error handling
+error_handling:
+  max_retries: 3
+  pause_on_critical_failure: true
+  allow_skip_phases: false  # Don't allow skipping required phases
+
+# Output format
+output:
+  verbosity: "detailed"  # minimal | summary | detailed
+  include_metrics: true
+  include_context: true

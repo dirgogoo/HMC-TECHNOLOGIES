@@ -1,0 +1,112 @@
+name: "Full Feature Workflow"
+description: "Complete workflow for complex features with brainstorming, planning, policies, and review"
+version: "1.0.0"
+
+triggers:
+  keywords: ["implement", "create", "build", "feature"]
+  complexity: ["medium", "large"]
+  has_plan: false
+
+phases:
+  - id: "brainstorm"
+    name: "Brainstorming"
+    plugin: "superpowers"
+    hook: "brainstorm"
+    required: true
+    description: "Refine requirements using Socratic method"
+
+  - id: "plan"
+    name: "Planning"
+    plugin: "superpowers"
+    hook: "write-plan"
+    required: true
+    depends_on: ["brainstorm"]
+    description: "Create detailed implementation plan"
+
+  - id: "load-context"
+    name: "Load Context"
+    plugin: "ald"
+    hook: "load-memory"
+    required: true
+    description: "Load project memory, sprint, integrations"
+    pass_context_to: ["execute", "validate", "review"]
+
+  - id: "sprint-check"
+    name: "Sprint Validation"
+    plugin: "ald"
+    hook: "sprint-check"
+    required: true
+    break_on_fail: true
+    description: "Ensure task is in sprint scope"
+
+  - id: "find-policies"
+    name: "Policy Identification"
+    plugin: "ald"
+    hook: "policy-finder"
+    required: true
+    description: "Auto-identify relevant policies"
+    pass_context_to: ["execute"]
+
+  - id: "tdd-cycle"
+    name: "TDD Implementation"
+    plugin: "superpowers-dev"
+    hook: "test-driven-development"
+    required: true
+    depends_on: ["plan", "load-context", "find-policies"]
+    context_includes: ["plan", "memory", "policies"]
+    description: "Execute plan with TDD Red-Green-Refactor cycle"
+    cycle:
+      - "RED: Write failing test for next task"
+      - "Verify RED: Watch test fail correctly"
+      - "GREEN: Write minimal code to pass"
+      - "Verify GREEN: Watch test pass"
+      - "REFACTOR: Clean up code (keep tests green)"
+      - "Repeat for next task in plan"
+    rules:
+      - "NO PRODUCTION CODE WITHOUT FAILING TEST FIRST"
+      - "Test must fail for expected reason (not errors)"
+      - "Write minimal code (no over-engineering)"
+      - "All tests must pass before refactor"
+      - "Execute plan task-by-task with TDD for each"
+
+  - id: "defense-in-depth"
+    name: "Add Validation Layers"
+    plugin: "superpowers-dev"
+    hook: "defense-in-depth"
+    required: true
+    depends_on: ["tdd-cycle"]
+    description: "Add validation at multiple layers"
+    layers:
+      - "entry_point_validation"
+      - "business_logic_validation"
+      - "environment_guards"
+      - "debug_logging"
+
+  - id: "validate"
+    name: "E2E Validation"
+    plugin: "ald"
+    hook: "tester"
+    required: true
+    depends_on: ["defense-in-depth"]
+    retry_on_fail: true
+    max_retries: 3
+    description: "Validate as end user"
+
+  - id: "review"
+    name: "Code Review"
+    plugin: "ald"
+    hook: "code-reviewer"
+    required: true
+    depends_on: ["validate"]
+    description: "Policy compliance + code quality review"
+
+  - id: "learn"
+    name: "Pattern Learning"
+    plugin: "ald"
+    hook: "curator"
+    required: false
+    depends_on: ["review"]
+    description: "Learn from execution patterns"
+
+estimated_duration: "60-120 minutes"
+notes: "TDD by default - all features implemented with test-first discipline. Ensures 100% test coverage and validates tests actually work (by watching them fail first)."

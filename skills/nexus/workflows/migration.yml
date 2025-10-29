@@ -1,0 +1,400 @@
+name: "Database Migration Workflow"
+description: "Safe database migration workflow with security validation, backups, and rollback planning"
+version: "2.0.0"
+
+metadata:
+  intendedFor: ["migration", "database", "schema-change"]
+  complexity: "medium"
+  estimatedDuration: 45  # minutes
+  keywords: ["migration", "database", "schema", "table", "column", "index", "supabase", "postgres", "sql"]
+
+defaults:
+  timeout: 600000  # 10 minutes per phase (migrations can be slow)
+  on_failure: "abort"  # Don't continue if migration phase fails
+  on_timeout: "prompt"
+  max_retries: 1  # Migrations should not be retried automatically
+
+required:
+  plugins: ["ald-system"]
+  mcps: ["supabase"]  # Supabase MCP is mandatory for this workflow
+
+triggers:
+  keywords: ["migration", "database", "schema", "alter table", "create table", "add column"]
+  complexity: ["small", "medium", "large"]
+  has_plan: false
+
+phases:
+  - id: "load-context"
+    name: "Load Project Context"
+    description: "Load memory, database schema, past migrations"
+    timeout: 60000  # 1 minute
+    hooks:
+      - plugin: "ald-system"
+        hook: "load-memory"
+        required: true
+    on_failure: "abort"
+
+  - id: "list-migrations"
+    name: "List Existing Migrations"
+    description: "Review current migration history"
+    timeout: 120000  # 2 minutes
+    dependencies: ["load-context"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "list-migrations"
+        required: true
+    on_failure: "abort"
+    checklist: |
+      ☐ Review existing migrations
+      ☐ Identify last applied migration
+      ☐ Check for any pending migrations
+      ☐ Verify migration naming convention
+
+  - id: "pre-migration-backup"
+    name: "Backup Current State"
+    description: "Create backup before making changes"
+    timeout: 300000  # 5 minutes
+    dependencies: ["list-migrations"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "backup-database"
+        required: true
+    on_failure: "abort"
+    backup_strategy: |
+      Create backup of:
+      - Current database schema (pg_dump schema-only)
+      - Critical tables data (if small dataset)
+      - Migration history table
+
+      Verify backup:
+      ☐ Backup file created
+      ☐ Backup size reasonable
+      ☐ Backup readable (test restore on dev if critical)
+
+  - id: "write-migration"
+    name: "Write Migration SQL"
+    description: "Create migration file with DDL statements"
+    timeout: 900000  # 15 minutes
+    dependencies: ["pre-migration-backup"]
+    hooks: []
+    migration_guidelines: |
+      **Migration Naming**: YYYYMMDDHHMMSS_descriptive_name.sql
+      Example: 20251029143000_add_user_preferences_table.sql
+
+      **Migration Structure**:
+      ```sql
+      -- Migration: Add user_preferences table
+      -- Author: [Your Name]
+      -- Date: 2025-10-29
+
+      -- UP Migration (apply changes)
+      CREATE TABLE IF NOT EXISTS user_preferences (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+        preferences JSONB DEFAULT '{}',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      -- Indexes
+      CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);
+
+      -- RLS Policies (CRITICAL - see security section)
+      ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
+
+      CREATE POLICY "Users can view own preferences"
+        ON user_preferences FOR SELECT
+        USING (auth.uid() = user_id);
+
+      CREATE POLICY "Users can update own preferences"
+        ON user_preferences FOR UPDATE
+        USING (auth.uid() = user_id);
+
+      -- DOWN Migration (rollback changes) - OPTIONAL but recommended
+      -- DROP TABLE IF EXISTS user_preferences CASCADE;
+      ```
+
+      **CRITICAL Rules**:
+      1. Use IF NOT EXISTS / IF EXISTS for idempotency
+      2. ALWAYS add RLS policies for user-facing tables
+      3. Add indexes for foreign keys
+      4. Use CASCADE carefully (document why)
+      5. Test on dev/staging first
+      6. Add comments explaining WHY, not WHAT
+
+  - id: "migration-dry-run"
+    name: "Validate Migration (Dry Run)"
+    description: "Test migration syntax without applying"
+    timeout: 180000  # 3 minutes
+    dependencies: ["write-migration"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "validate-migration"
+        required: true
+    on_failure: "abort"
+    validation_checks: |
+      Dry run validation:
+      ☐ SQL syntax valid
+      ☐ Referenced tables/columns exist
+      ☐ No conflicting constraints
+      ☐ Foreign key references valid
+      ☐ RLS policies syntax correct
+      ☐ Indexes don't conflict with existing
+
+  - id: "security-pre-check"
+    name: "Security Pre-Check"
+    description: "Validate security before applying migration"
+    timeout: 180000  # 3 minutes
+    dependencies: ["migration-dry-run"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "policy-finder"
+        required: true
+        filter: "database-security"
+    security_checklist: |
+      **MANDATORY Security Checks**:
+
+      ☐ **RLS Enabled**: All user-facing tables have RLS enabled
+      ☐ **Policies Defined**: Appropriate SELECT/INSERT/UPDATE/DELETE policies
+      ☐ **Foreign Keys**: Cascading deletes reviewed and intentional
+      ☐ **Sensitive Data**: PII columns identified and protected
+      ☐ **Public Schema**: No tables accidentally in public schema
+      ☐ **Default Permissions**: No public access unless intentional
+
+      **ALD Policy 10.1**: All user-facing tables MUST have RLS enabled
+      **ALD Policy 10.2**: Each RLS policy MUST be tested with actual user context
+      **ALD Policy 10.3**: Foreign key cascades MUST be explicitly justified
+
+  - id: "migration-execute"
+    name: "Execute Migration"
+    description: "Apply migration to database"
+    timeout: 600000  # 10 minutes (large migrations can be slow)
+    dependencies: ["security-pre-check"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "apply-migration"
+        required: true
+    on_failure: "abort"
+    execution_steps: |
+      1. Apply migration via Supabase MCP
+      2. Capture migration output
+      3. Record migration in history
+      4. Verify migration applied successfully
+
+  - id: "post-migration-validation"
+    name: "Validate Migration Applied"
+    description: "Verify schema changes are correct"
+    timeout: 300000  # 5 minutes
+    dependencies: ["migration-execute"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "list-tables"
+        required: true
+    validation_steps: |
+      Verify migration results:
+      ☐ Tables created/modified as expected
+      ☐ Columns have correct types
+      ☐ Indexes created
+      ☐ Foreign keys established
+      ☐ RLS enabled on new tables
+      ☐ Policies applied correctly
+
+      Query to verify:
+      ```sql
+      -- Check table exists
+      SELECT tablename FROM pg_tables
+      WHERE schemaname = 'public' AND tablename = 'user_preferences';
+
+      -- Check RLS enabled
+      SELECT tablename, rowsecurity FROM pg_tables
+      WHERE tablename = 'user_preferences';
+
+      -- Check policies
+      SELECT policyname, cmd, qual
+      FROM pg_policies
+      WHERE tablename = 'user_preferences';
+      ```
+
+  - id: "security-audit"
+    name: "Security Audit (Mandatory)"
+    description: "Run Supabase security advisors"
+    timeout: 300000  # 5 minutes
+    dependencies: ["post-migration-validation"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "get-advisors"
+        required: true
+        type: "security"
+    on_failure: "abort"  # CRITICAL: Must pass security audit
+    audit_requirements: |
+      **MANDATORY**: Security audit must pass before completing workflow.
+
+      Check for:
+      ☐ No tables without RLS (if user-facing)
+      ☐ No overly permissive policies
+      ☐ No SQL injection vulnerabilities
+      ☐ No exposed sensitive columns
+      ☐ No missing indexes on foreign keys
+
+      **If audit fails**:
+      1. Fix security issues immediately
+      2. Apply hotfix migration
+      3. Re-run security audit
+      4. Do NOT proceed until clean
+
+  - id: "rollback-plan"
+    name: "Document Rollback Plan"
+    description: "Create rollback instructions"
+    timeout: 180000  # 3 minutes
+    dependencies: ["security-audit"]
+    hooks: []
+    rollback_template: |
+      ## Rollback Plan for Migration: [Migration Name]
+
+      **Applied**: [timestamp]
+      **Backup Location**: [path/url]
+
+      ### Quick Rollback (< 5 minutes)
+      ```sql
+      -- If migration has DOWN section, run it:
+      -- [paste DOWN migration SQL]
+
+      -- OR manually revert:
+      DROP TABLE IF EXISTS user_preferences CASCADE;
+      -- [additional rollback statements]
+      ```
+
+      ### Full Restore from Backup (< 15 minutes)
+      ```bash
+      # Restore from backup
+      pg_restore --clean --if-exists -d [database] [backup-file]
+
+      # Verify restore
+      SELECT COUNT(*) FROM [affected_tables];
+      ```
+
+      ### Verification After Rollback
+      ☐ Tables restored to pre-migration state
+      ☐ Application still functions
+      ☐ No data loss
+      ☐ RLS policies intact
+
+      **Rollback Decision Criteria**:
+      - Application errors after migration
+      - Performance degradation
+      - Security vulnerabilities discovered
+      - Data integrity issues
+
+  - id: "test-migration"
+    name: "Test Migrated Schema"
+    description: "Test application with new schema"
+    timeout: 300000  # 5 minutes
+    dependencies: ["rollback-plan"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "tester"
+        required: false  # Optional if ALD not available
+    test_checklist: |
+      Test scenarios:
+      ☐ Application starts without errors
+      ☐ Affected features work correctly
+      ☐ No console errors related to schema
+      ☐ Database queries return expected data
+      ☐ RLS policies enforce correctly (test as different users)
+      ☐ Performance acceptable (no slow queries)
+
+      **If tests fail**:
+      - Consider rollback using documented plan
+      - Fix issues and create follow-up migration
+
+  - id: "update-types"
+    name: "Generate TypeScript Types (Optional)"
+    description: "Update TypeScript types for new schema"
+    timeout: 180000  # 3 minutes
+    dependencies: ["test-migration"]
+    hooks:
+      - plugin: "mcp-supabase"
+        hook: "generate-typescript-types"
+        required: false  # Optional
+    on_failure: "skip"
+    optional: true
+
+  - id: "learning-capture"
+    name: "Capture Migration Learnings"
+    description: "Save migration patterns to ALD memory"
+    timeout: 120000  # 2 minutes
+    dependencies: ["test-migration"]
+    hooks:
+      - plugin: "ald-system"
+        hook: "curator"
+        required: false
+    capture_items: |
+      Capture to ALD memory:
+      - Migration patterns used
+      - Security considerations discovered
+      - Performance implications
+      - Rollback strategy effectiveness
+      - Issues encountered and solutions
+
+workflow_notes: |
+  **When to use Migration Workflow**:
+  - Creating new tables
+  - Modifying existing schema (add/remove columns)
+  - Adding indexes
+  - Changing constraints
+  - Altering RLS policies
+  - Data migrations (with caution)
+
+  **When NOT to use**:
+  - Simple data updates (use SQL directly)
+  - Emergency schema fixes (use hotfix workflow first)
+  - Experimental schema changes (use spike workflow first)
+
+  **Migration Philosophy**:
+  1. **Safety First**: Backup, validate, test, then apply
+  2. **Security Always**: RLS is non-negotiable for user data
+  3. **Rollback Ready**: Always have a rollback plan
+  4. **Test Thoroughly**: Test on dev/staging before production
+  5. **Document Well**: Future you will thank present you
+
+  **Common Pitfalls to Avoid**:
+  - ❌ No RLS on user-facing tables
+  - ❌ Cascading deletes without justification
+  - ❌ Missing indexes on foreign keys
+  - ❌ No rollback plan
+  - ❌ Skipping security audit
+  - ❌ Testing only as admin user
+
+success_criteria:
+  - Migration applied successfully
+  - Security audit passes
+  - Tests pass with new schema
+  - Rollback plan documented
+  - TypeScript types updated (if applicable)
+  - No RLS policy violations
+
+failure_criteria:
+  - Security audit fails
+  - Migration syntax errors
+  - Tests fail after migration
+  - Performance degradation detected
+
+ald_policies_enforced:
+  - "10.1: User-facing tables must have RLS enabled"
+  - "10.2: RLS policies must be tested with user context"
+  - "10.3: Foreign key cascades must be justified"
+  - "10.4: Migrations must have rollback plan"
+  - "10.5: Security audit must pass before completion"
+
+estimated_times:
+  load_context: "1 minute"
+  backup: "3-5 minutes"
+  write_migration: "10-15 minutes"
+  validation: "3-5 minutes"
+  security_check: "2-3 minutes"
+  execute: "2-10 minutes (depends on data size)"
+  post_validation: "3-5 minutes"
+  security_audit: "2-3 minutes"
+  rollback_plan: "3 minutes"
+  testing: "5 minutes"
+  total: "35-50 minutes"
