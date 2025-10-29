@@ -1,8 +1,10 @@
-# HMC Technologies - AI Development Tools
+# HMC Technologies Marketplace
 
 **AI-Powered Development System for Claude Code**
 
-A unified marketplace combining powerful development tools: ALD System (Autonomous Learning & Development) and Nexus (Master Workflow Orchestrator).
+A unified skills-based marketplace combining powerful development tools: ALD System (Autonomous Learning & Development) and Nexus (Master Workflow Orchestrator).
+
+> **Note**: As of v2.0.0, this marketplace follows a **flat skills-based structure** using the Superpowers pattern. All skills are auto-discovered from the `skills/` directory.
 
 ---
 
@@ -29,33 +31,33 @@ A unified marketplace combining powerful development tools: ALD System (Autonomo
 - `ald-policy-finder` - Smart policy search
 - `ald-code-reviewer` - Policy-aware code review
 
-### 2. **Nexus** (v1.1.3)
+### 2. **Nexus** (v2.0.0)
 **Master Workflow Orchestrator**
 
 - 🎯 **Intent Detection** - Analyzes tasks to select optimal workflows
 - 🔄 **Multi-Plugin Coordination** - Seamlessly coordinates Superpowers + ALD + MCPs
-- 📋 **Declarative Workflows** - YAML-based workflow templates
+- 📋 **Declarative Workflows** - 12 YAML-based workflow templates
 - ✅ **Policy Enforcement** - Automatic validation using ALD policies
 - 🔌 **MCP Auto-Injection** - Keywords trigger MCP usage automatically
 - 🚀 **TDD by Default** - Red-Green-Refactor cycle for quality code
 - 📊 **Unified Reporting** - Aggregates results across all plugins
+- 🌍 **Multi-Language** - Brazilian Portuguese + US English (i18n)
+- 🎨 **SessionStart Hook** - Welcome message on startup
 
-**3 Commands:**
-- `/nexus` - Invoke orchestrator for intelligent workflow management
-- `/nexus-setup` - Auto-install dependencies (ALD System, Superpowers, MCPs)
-- `/nexus-update` - Check and install updates from GitHub
+**Command:**
+- `/nexus:execute [task]` - Invoke orchestrator for intelligent workflow management
 
 ---
 
 ## 🚀 Installation
 
-### One-Line Install (Both Plugins)
+### One-Line Install
 
 ```bash
 /plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
 ```
 
-This installs **both** ALD System and Nexus with a single command!
+This installs the entire marketplace with all skills!
 
 ### Verify Installation
 
@@ -64,8 +66,11 @@ This installs **both** ALD System and Nexus with a single command!
 ```
 
 You should see:
-- ✅ **ald-system** (8 skills)
-- ✅ **nexus** (3 commands)
+- ✅ **HMC Technologies Marketplace** (9 skills total)
+  - 8 ALD skills (ald-memory, ald-policies, ald-curator, etc.)
+  - 1 Nexus orchestrator skill
+- ✅ **Commands**: `/nexus:execute`
+- ✅ **Hooks**: SessionStart (welcome message)
 
 ---
 
@@ -88,32 +93,66 @@ You should see:
 
 ```bash
 # Orchestrate complex workflows
-/nexus implement checkout with Stripe
+/nexus:execute implement checkout with Stripe
 
-# Setup dependencies
-/nexus-setup
+# Or simply use /nexus (activates nexus skill automatically)
+/nexus implement user authentication
 
-# Check for updates
-/nexus-update
+# Nexus automatically:
+# 1. Detects intent (feature, bugfix, hotfix, etc.)
+# 2. Selects optimal workflow
+# 3. Coordinates Superpowers + ALD + MCPs
+# 4. Presents workflow for confirmation
+# 5. Executes phases and aggregates results
 ```
 
 ---
 
 ## 📖 Documentation
 
+### Marketplace Structure (v2.0.0)
+```
+hmc-marketplace/
+├── commands/                 # Slash commands
+│   └── execute.md           # /nexus:execute command
+├── hooks/                   # Event hooks
+│   ├── hooks.json           # Hook configuration
+│   └── session-start.sh     # SessionStart welcome message
+├── config/                  # Global configuration
+│   ├── defaults.yml         # 200+ settings
+│   └── i18n/                # Multi-language support
+│       ├── pt-BR.yml        # Brazilian Portuguese
+│       └── en-US.yml        # US English
+└── skills/                  # Auto-discovered skills
+    ├── ald-memory/          # ALD System skills (8 total)
+    ├── ald-policies/
+    ├── ald-curator/
+    ├── ald-tester/
+    ├── ald-orchestrator/
+    ├── ald-sprint/
+    ├── ald-policy-finder/
+    ├── ald-code-reviewer/
+    └── nexus/               # Nexus orchestrator
+        ├── SKILL.md         # Executable orchestrator skill
+        ├── workflows/       # 12 workflow templates
+        ├── docs/            # Technical documentation
+        ├── plugins/         # Internal plugin registry
+        └── config/          # Nexus-specific config
+```
+
 ### ALD System
-- **Main Docs**: `plugins/ald-system/README.md`
-- **System Controller**: `plugins/ald-system/CLAUDE.md`
-- **Skill Entry Point**: `plugins/ald-system/SKILL.md`
-- **Migration Guide**: `plugins/ald-system/docs/MIGRATION.md`
-- **Enforcement Guide**: `plugins/ald-system/docs/HOW_TO_ENFORCE_ALD.md`
+- **Main Docs**: `skills/ald-memory/README.md` (and other ald-* skills)
+- **System Controller**: `skills/ald-memory/CLAUDE.md`
+- **Enforcement Guide**: `skills/ald-memory/docs/HOW_TO_ENFORCE_ALD.md`
 
 ### Nexus
-- **Main Docs**: `plugins/nexus/README.md`
-- **Skill Entry Point**: `plugins/nexus/SKILL.md`
-- **Workflow Templates**: `plugins/nexus/workflows/`
-- **MCP Integration**: `plugins/nexus/MCP-INTEGRATION.md`
-- **Integration Tests**: `plugins/nexus/INTEGRATION-TESTS.md`
+- **Main Docs**: `skills/nexus/README.md`
+- **Skill Entry Point**: `skills/nexus/SKILL.md` (executable orchestrator)
+- **Workflow Templates**: `skills/nexus/workflows/` (12 workflows)
+- **MCP Integration**: `skills/nexus/MCP-INTEGRATION.md`
+- **Integration Tests**: `skills/nexus/INTEGRATION-TESTS.md`
+- **Changelog**: `skills/nexus/CHANGELOG.md`
+- **Contributing**: `skills/nexus/CONTRIBUTING.md`
 
 ---
 
@@ -212,11 +251,18 @@ See [LICENSE](LICENSE) for details.
 
 ## 📦 Version Information
 
-**Marketplace Version**: 1.0.0
-- **ALD System**: v1.3.3
-- **Nexus**: v1.1.3
+**Marketplace Version**: 2.0.0 (Flat Structure)
+- **ALD System**: v1.3.3 (8 skills)
+- **Nexus**: v2.0.0 (orchestrator skill)
 
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+**Breaking Changes in v2.0.0**:
+- Migrated from nested `plugins/` to flat `skills/` structure
+- Command renamed: `/nexus:nexus` → `/nexus:execute`
+- Auto-discovery replaces marketplace.json registry
+- Added hooks system (SessionStart welcome message)
+- Added global config (200+ settings, i18n support)
+
+See [skills/nexus/CHANGELOG.md](skills/nexus/CHANGELOG.md) for complete version history.
 
 ---
 
@@ -237,7 +283,9 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 3. **Production Ready** - 155 validated policies + tested workflows
 4. **Self-Improving** - Curator learns from your patterns
 5. **Quality Focused** - Zero compromises on code quality
-6. **Community Standard** - Follows Claude Code marketplace patterns
+6. **Community Standard** - Follows Superpowers flat marketplace pattern
+7. **Multi-Language** - Brazilian Portuguese + US English (i18n)
+8. **Smart Hooks** - SessionStart welcome message shows capabilities
 
 ---
 
