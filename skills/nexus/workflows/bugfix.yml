@@ -1,6 +1,10 @@
 name: "Bugfix Workflow"
 description: "Quick workflow for bug fixes - minimal overhead, maximum speed"
-version: "1.0.0"
+version: "1.1.0"
+
+# i18n support
+i18n:
+  key: "workflows.bugfix"  # See config/i18n/*.yml
 
 triggers:
   keywords: ["fix", "debug", "resolve", "repair", "bug"]

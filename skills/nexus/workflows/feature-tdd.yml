@@ -1,6 +1,10 @@
 name: "TDD Strict Workflow (Advanced)"
 description: "STRICT TDD-only workflow - no planning phase, pure test-driven development for experienced devs"
-version: "1.0.0"
+version: "1.1.0"
+
+# i18n support
+i18n:
+  key: "workflows.feature_full"  # See config/i18n/*.yml
 
 triggers:
   keywords: ["tdd-strict", "pure-tdd", "test-first"]

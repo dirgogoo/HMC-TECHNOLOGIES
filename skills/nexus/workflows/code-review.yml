@@ -1,6 +1,10 @@
 name: "Code Review Workflow"
 description: "Review-only workflow using ald-code-reviewer (ALD policies + Superpowers review)"
-version: "1.0.0"
+version: "1.1.0"
+
+# i18n support
+i18n:
+  key: "workflows.code_review"  # See config/i18n/*.yml
 
 triggers:
   keywords: ["review", "check", "validate", "inspect"]

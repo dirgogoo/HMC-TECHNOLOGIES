@@ -1,6 +1,10 @@
 name: "Quick Feature Workflow"
 description: "Medium-complexity features - planning + execution with policies"
-version: "1.0.0"
+version: "1.1.0"
+
+# i18n support
+i18n:
+  key: "workflows.feature_quick"  # pt-BR: "Desenvolvimento Rápido de Funcionalidade"
 
 triggers:
   keywords: ["implement", "create", "add"]
@@ -10,12 +14,14 @@ triggers:
 phases:
   - id: "load-context"
     name: "Load Context"
+    i18n_key: "nexus.phases.loading_context"
     plugin: "ald"
     hook: "load-memory"
     required: true
 
   - id: "sprint-check"
     name: "Sprint Check"
+    i18n_key: "ald.sprint.in_scope"
     plugin: "ald"
     hook: "sprint-check"
     required: true
@@ -23,18 +29,21 @@ phases:
 
   - id: "plan"
     name: "Quick Planning"
+    i18n_key: "nexus.phases.planning"
     plugin: "superpowers"
     hook: "write-plan"
     required: true
 
   - id: "find-policies"
     name: "Find Policies"
+    i18n_key: "nexus.phases.finding_policies"
     plugin: "ald"
     hook: "policy-finder"
     required: true
 
   - id: "tdd-cycle"
     name: "TDD Implementation"
+    i18n_key: "nexus.phases.executing"
     plugin: "superpowers-dev"
     hook: "test-driven-development"
     required: true
@@ -55,6 +64,7 @@ phases:
 
   - id: "defense-in-depth"
     name: "Add Validation Layers"
+    i18n_key: "nexus.phases.validating"
     plugin: "superpowers-dev"
     hook: "defense-in-depth"
     required: true
@@ -68,6 +78,7 @@ phases:
 
   - id: "validate"
     name: "E2E Validation"
+    i18n_key: "nexus.phases.validating"
     plugin: "ald"
     hook: "tester"
     required: true
@@ -76,6 +87,7 @@ phases:
 
   - id: "review"
     name: "Code Review"
+    i18n_key: "nexus.phases.reviewing"
     plugin: "ald"
     hook: "code-reviewer"
     required: true

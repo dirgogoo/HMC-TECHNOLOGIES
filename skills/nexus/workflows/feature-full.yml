@@ -1,6 +1,13 @@
 name: "Full Feature Workflow"
 description: "Complete workflow for complex features with brainstorming, planning, policies, and review"
-version: "1.0.0"
+version: "1.1.0"
+
+# i18n support
+i18n:
+  key: "workflows.feature_full"  # References config/i18n/*.yml
+  # When executed, Nexus will use:
+  #   - pt-BR: "Desenvolvimento Completo de Funcionalidade"
+  #   - en-US: "Full Feature Development"
 
 triggers:
   keywords: ["implement", "create", "build", "feature"]
@@ -10,6 +17,7 @@ triggers:
 phases:
   - id: "brainstorm"
     name: "Brainstorming"
+    i18n_key: "nexus.phases.brainstorming"  # pt-BR: "Refinando requisitos"
     plugin: "superpowers"
     hook: "brainstorm"
     required: true
@@ -17,6 +25,7 @@ phases:
 
   - id: "plan"
     name: "Planning"
+    i18n_key: "nexus.phases.planning"  # pt-BR: "Criando plano de implementação"
     plugin: "superpowers"
     hook: "write-plan"
     required: true
@@ -25,6 +34,7 @@ phases:
 
   - id: "load-context"
     name: "Load Context"
+    i18n_key: "nexus.phases.loading_context"  # pt-BR: "Carregando contexto do projeto"
     plugin: "ald"
     hook: "load-memory"
     required: true
@@ -33,6 +43,7 @@ phases:
 
   - id: "sprint-check"
     name: "Sprint Validation"
+    i18n_key: "ald.sprint.in_scope"  # pt-BR: "Tarefa dentro do escopo"
     plugin: "ald"
     hook: "sprint-check"
     required: true
@@ -41,6 +52,7 @@ phases:
 
   - id: "find-policies"
     name: "Policy Identification"
+    i18n_key: "nexus.phases.finding_policies"  # pt-BR: "Identificando políticas relevantes"
     plugin: "ald"
     hook: "policy-finder"
     required: true
@@ -49,6 +61,7 @@ phases:
 
   - id: "tdd-cycle"
     name: "TDD Implementation"
+    i18n_key: "nexus.phases.executing"  # pt-BR: "Implementando código"
     plugin: "superpowers-dev"
     hook: "test-driven-development"
     required: true
@@ -71,6 +84,7 @@ phases:
 
   - id: "defense-in-depth"
     name: "Add Validation Layers"
+    i18n_key: "nexus.phases.validating"  # pt-BR: "Validando implementação"
     plugin: "superpowers-dev"
     hook: "defense-in-depth"
     required: true
@@ -84,6 +98,7 @@ phases:
 
   - id: "validate"
     name: "E2E Validation"
+    i18n_key: "nexus.phases.validating"  # pt-BR: "Validando implementação"
     plugin: "ald"
     hook: "tester"
     required: true
@@ -94,6 +109,7 @@ phases:
 
   - id: "review"
     name: "Code Review"
+    i18n_key: "nexus.phases.reviewing"  # pt-BR: "Revisando código"
     plugin: "ald"
     hook: "code-reviewer"
     required: true
@@ -102,6 +118,7 @@ phases:
 
   - id: "learn"
     name: "Pattern Learning"
+    i18n_key: "nexus.phases.learning"  # pt-BR: "Capturando padrões aprendidos"
     plugin: "ald"
     hook: "curator"
     required: false
