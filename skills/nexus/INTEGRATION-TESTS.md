@@ -17,7 +17,7 @@ Use this checklist to validate the MCP integration is working correctly.
 
 ```bash
 # Check registry
-cat ~/.claude/skills/nexus/plugins/registry.json | grep "mcp-"
+cat ~/.claude/skills/skills/nexus/plugins/registry.json | grep "mcp-"
 
 # Expected output:
 ✅ "mcp-supabase" (priority 10, enabled: true)
@@ -40,7 +40,7 @@ cat ~/.claude/skills/nexus/plugins/registry.json | grep "mcp-"
 
 ```bash
 # Check plugin files exist
-ls ~/.claude/skills/nexus/plugins/mcp-*/plugin.yml
+ls ~/.claude/skills/skills/nexus/plugins/mcp-*/plugin.yml
 
 # Expected:
 ✅ mcp-supabase/plugin.yml

@@ -272,13 +272,13 @@ Nexus coordinates multiple plugins through a standardized interface.
 
 Want to add LangChain, AutoGen, or custom systems?
 
-1. **Create plugin metadata**: `nexus/plugins/[name]/plugin.yml`
-2. **Register**: Add to `nexus/plugins/registry.json`
+1. **Create plugin metadata**: `skills/nexus/plugins/[name]/plugin.yml`
+2. **Register**: Add to `skills/nexus/plugins/registry.json`
 3. **Create workflows**: Use new plugin in `nexus/workflows/`
 
 Example:
 ```yaml
-# nexus/plugins/langchain/plugin.yml
+# skills/nexus/plugins/langchain/plugin.yml
 name: "langchain"
 hooks:
   - name: "research"

@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] - 2025-10-29
+
+### 🚀 BREAKING CHANGE: Flat Marketplace Structure
+
+Complete restructuring from nested plugin-based to flat skills-based marketplace following Superpowers pattern.
+
+**Migration Guide**:
+- Old `plugins/` structure → New flat `skills/` at marketplace root
+- Old `.claude-plugin/marketplace.json` → Auto-discovery from `skills/`
+- Command renamed: `/nexus:nexus` → `/nexus:execute`
+- All content preserved, only structure changed
+
+**Added**:
+- `commands/execute.md` - `/nexus:execute` command (renamed from `/nexus`)
+- `hooks/hooks.json` + `hooks/session-start.sh` - SessionStart welcome message
+- `config/defaults.yml` - Global configuration (200+ settings)
+- `config/i18n/pt-BR.yml` - Brazilian Portuguese translations
+- `config/i18n/en-US.yml` - US English translations
+- `skills/nexus/SKILL.md` - Redesigned as executable (not just instructional)
+- `skills/nexus/docs/` - Technical docs (moved from `core/`)
+
+**Changed**:
+- Structure: Nested plugins → Flat skills
+- Discovery: marketplace.json registry → Auto-discovery
+- Hooks: None → SessionStart with welcome message
+- Config: Hardcoded → YAML with i18n support
+- SKILL.md: Instructional → Executable workflow
+- Paths: All references updated to new structure
+
+**Removed**:
+- `plugins/` directory (134 files) - Moved to `skills/`
+- `.claude-plugin/marketplace.json` - No longer needed
+- `/nexus-setup` and `/nexus-update` commands
+
+**Note**: Versions 1.x below used old nested `plugins/` structure. References to `plugins/` in changelog entries are historical.
+
+---
+
 ## [1.1.0] - 2025-10-28
 
 ### ⭐ Major Features

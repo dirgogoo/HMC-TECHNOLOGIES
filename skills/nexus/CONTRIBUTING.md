@@ -2,6 +2,8 @@
 
 Thank you for your interest in contributing to Nexus! This document provides guidelines and instructions for contributing.
 
+> **Note**: As of v2.0.0, Nexus has transitioned to a **flat marketplace structure** following the Superpowers pattern. The old nested `plugins/` structure has been replaced with flat `skills/` discovery. See [Project Structure](#📊-project-structure) section for current layout.
+
 ---
 
 ## 🎯 How to Contribute
@@ -222,7 +224,7 @@ Run validation tests:
 
 ### Adding MCP Plugin
 
-1. **Create plugin.yml** in `plugins/mcp-[name]/`:
+1. **Create plugin.yml** in `skills/nexus/plugins/mcp-[name]/`:
    ```yaml
    name: "mcp-[name]"
    description: "What this MCP does"
@@ -248,7 +250,7 @@ Run validation tests:
          mandatory: true | false
    ```
 
-2. **Register** in `plugins/registry.json`
+2. **Register** in `skills/nexus/plugins/registry.json`
 3. **Document** in MCP-INTEGRATION.md
 4. **Create setup guide** in `docs/mcp-setup/[name].md`
 5. **Submit PR**
@@ -265,38 +267,42 @@ Run validation tests:
 
 ## 📊 Project Structure
 
+> **Note**: Structure updated in v2.0.0 to flat marketplace pattern.
+
 ```
-nexus/
-├── .claude-plugin/
-│   └── plugin.json          # Plugin metadata
-├── commands/
-│   ├── nexus.md             # /nexus command
-│   └── nexus-setup.md       # /nexus-setup command
-├── core/
+nexus/ (within skills/nexus/ of marketplace)
+├── SKILL.md                 # Main orchestrator skill (executable)
+├── README.md                # Overview and quick start
+├── CHANGELOG.md             # Version history
+├── CONTRIBUTING.md          # This file
+├── workflows/               # 12 workflow definitions
+│   ├── feature-full.yml     # Complex features with brainstorm
+│   ├── feature-quick.yml    # Medium features
+│   ├── feature-tdd.yml      # TDD workflow
+│   ├── bugfix.yml           # Quick bug fixes
+│   ├── hotfix.yml           # Emergency fixes (<10 min)
+│   ├── refactor.yml         # Code refactoring
+│   ├── code-review.yml      # Review only
+│   ├── spike.yml            # Research/investigation
+│   ├── migration.yml        # Database migrations
+│   ├── documentation.yml    # API docs, READMEs
+│   ├── performance.yml      # Performance optimization
+│   └── custom.yml           # User-defined
+├── docs/                    # Technical documentation
 │   ├── intent-detector.md   # Intent detection algorithm
 │   ├── workflow-engine.md   # Workflow selection logic
 │   ├── orchestrator.md      # Plugin coordination
 │   ├── mcp-detector.md      # MCP auto-discovery
 │   ├── mcp-injector.md      # MCP hook injection
 │   └── state-manager.md     # State tracking
-├── workflows/
-│   ├── feature-full.yml     # Complex features
-│   ├── feature-quick.yml    # Medium features
-│   ├── bugfix.yml           # Quick fixes
-│   ├── refactor.yml         # Refactoring
-│   ├── code-review.yml      # Review only
-│   └── EXAMPLE-enhanced-workflow.yml
-├── plugins/
-│   ├── registry.json        # Plugin registry
-│   ├── ald/                 # ALD plugin metadata
-│   ├── superpowers/         # Superpowers metadata
-│   ├── mcp-supabase/        # Supabase MCP
-│   ├── mcp-chrome-devtools/ # Chrome DevTools MCP
-│   ├── mcp-episodic-memory/ # Memory MCP
-│   └── mcp-github/          # GitHub MCP
+├── plugins/                 # Internal plugin registry (not marketplace-level)
+│   ├── registry.json        # Plugin metadata registry
+│   ├── ald/plugin.yml       # ALD system metadata
+│   ├── superpowers/plugin.yml  # Superpowers metadata
+│   └── mcp-*/plugin.yml     # MCP integration metadata
 ├── config/
 │   ├── defaults.yml         # Default configuration
-│   └── user-preferences.template.yml
+│   └── user-preferences.yml # User customization
 ├── docs/
 │   └── mcp-setup/          # MCP setup guides
 ├── SKILL.md                 # Main skill file
