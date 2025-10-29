@@ -144,6 +144,10 @@ workflows:
     name: "Code Review"
     description: "Review without implementation"
 
+  chore:
+    name: "Maintenance Task"
+    description: "Maintenance tasks: dependencies, configs, cleanup"
+
 # Error Messages
 errors:
   workflow_not_found: "Workflow not found"

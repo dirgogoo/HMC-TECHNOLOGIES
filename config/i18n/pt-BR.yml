@@ -144,6 +144,10 @@ workflows:
     name: "Revisão de Código"
     description: "Revisão sem implementação"
 
+  chore:
+    name: "Tarefa de Manutenção"
+    description: "Tarefas de manutenção: dependências, configs, limpeza"
+
 # Error Messages
 errors:
   workflow_not_found: "Workflow não encontrado"

@@ -1,0 +1,75 @@
+name: "Chore/Maintenance Workflow"
+description: "Fast workflow for maintenance tasks: dependencies, configs, cleanup, minor refactoring"
+version: "1.0.0"
+
+# i18n support
+i18n:
+  key: "workflows.chore"
+  # pt-BR: "Tarefa de Manutenção"
+  # en-US: "Maintenance Task"
+
+triggers:
+  keywords: ["chore", "update", "upgrade", "cleanup", "maintain", "dependency", "deps"]
+  complexity: ["small", "medium"]
+  has_plan: false
+
+phases:
+  - id: "load-context"
+    name: "Load Context"
+    i18n_key: "nexus.phases.loading_context"
+    plugin: "ald"
+    hook: "load-memory"
+    required: true
+    description: "Load project context and understand current state"
+
+  - id: "execute"
+    name: "Execute Chore"
+    i18n_key: "nexus.phases.executing"
+    plugin: "ald"
+    hook: "executor"
+    required: true
+    depends_on: ["load-context"]
+    description: "Execute maintenance task (update deps, configs, cleanup, etc.)"
+    examples:
+      - "Update npm dependencies"
+      - "Clean up unused files"
+      - "Update configuration files"
+      - "Reorganize project structure"
+      - "Update CI/CD pipelines"
+
+  - id: "validate"
+    name: "Quick Validation"
+    i18n_key: "nexus.phases.validating"
+    plugin: "ald"
+    hook: "tester"
+    required: false
+    depends_on: ["execute"]
+    description: "Quick validation (optional for low-risk chores)"
+    validation_types:
+      - "Build still works"
+      - "Tests still pass"
+      - "No regressions"
+
+  - id: "learn"
+    name: "Pattern Learning"
+    i18n_key: "nexus.phases.learning"
+    plugin: "ald"
+    hook: "curator"
+    required: false
+    depends_on: ["validate"]
+    description: "Learn patterns from maintenance task"
+
+estimated_duration: "5-15 minutes"
+
+notes: |
+  Fast workflow for maintenance tasks with minimal overhead.
+
+  Use this workflow for:
+  - Dependency updates (npm, pip, etc.)
+  - Configuration changes (eslint, prettier, tsconfig)
+  - Cleanup tasks (remove unused files, organize imports)
+  - Documentation updates (minor README changes)
+  - CI/CD updates (GitHub Actions, hooks)
+
+  Validation is optional for low-risk changes like dependency updates or config tweaks.
+  For higher-risk chores, enable validation to ensure nothing breaks.
