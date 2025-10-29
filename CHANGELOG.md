@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Dirgogoo Marketplace will be documented in this file.
+All notable changes to the HMC Technologies Marketplace will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -88,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```bash
 # Single command installs both plugins
-/plugin marketplace add dirgogoo/marketplace
+/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
 
 # Verify installation
 /plugin menu
@@ -129,7 +129,7 @@ All code follows ALD quality gates:
 ### After (Current)
 ```bash
 # Single command installs both
-/plugin marketplace add dirgogoo/marketplace
+/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
 ```
 
 **Note**: Individual repositories (dirgogoo/ald-system, dirgogoo/nexus) are kept for reference but are deprecated in favor of the unified marketplace.
@@ -138,9 +138,9 @@ All code follows ALD quality gates:
 
 ## Links
 
-- **Repository**: https://github.com/dirgogoo/marketplace
-- **Issues**: https://github.com/dirgogoo/marketplace/issues
-- **Releases**: https://github.com/dirgogoo/marketplace/releases
+- **Repository**: https://github.com/dirgogoo/HMC-TECHNOLOGIES
+- **Issues**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/issues
+- **Releases**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/releases
 
 ---
 

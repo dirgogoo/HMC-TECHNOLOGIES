@@ -1,4 +1,4 @@
-# Dirgogoo Marketplace
+# HMC Technologies - AI Development Tools
 
 **AI-Powered Development System for Claude Code**
 
@@ -52,7 +52,7 @@ A unified marketplace combining powerful development tools: ALD System (Autonomo
 ### One-Line Install (Both Plugins)
 
 ```bash
-/plugin marketplace add dirgogoo/marketplace
+/plugin marketplace add dirgogoo/HMC-TECHNOLOGIES
 ```
 
 This installs **both** ALD System and Nexus with a single command!
@@ -222,8 +222,8 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/dirgogoo/marketplace
-- **Issues**: https://github.com/dirgogoo/marketplace/issues
+- **Repository**: https://github.com/dirgogoo/HMC-TECHNOLOGIES
+- **Issues**: https://github.com/dirgogoo/HMC-TECHNOLOGIES/issues
 - **Individual Plugin Repos** (deprecated):
   - ALD System: https://github.com/dirgogoo/ald-system
   - Nexus: https://github.com/dirgogoo/nexus

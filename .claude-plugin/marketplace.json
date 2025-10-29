@@ -1,8 +1,8 @@
 {
-  "name": "dirgogoo-marketplace",
+  "name": "hmc-technologies-marketplace",
   "owner": {
     "name": "dirgogoo",
-    "url": "https://github.com/dirgogoo"
+    "url": "https://github.com/dirgogoo/HMC-TECHNOLOGIES"
   },
   "metadata": {
     "description": "AI-Powered Development System: ALD (155 policies + memory) + Nexus (workflow orchestration)",
