@@ -33,8 +33,26 @@ Wait for user confirmation before continuing.
 
 ### Step 2: Install Superpowers Marketplace
 
-**Action**: Install Superpowers via marketplace command
+**Action**: Check if Superpowers is already installed, then install if needed
 
+**Step 2.1: Check if installed**
+```bash
+# Try to list available slash commands to detect Superpowers
+# Superpowers provides commands like /superpowers:brainstorm
+```
+
+**If already installed**:
+```markdown
+✅ Superpowers already installed - skipping
+
+Detected:
+✅ superpowers (structured workflows)
+✅ superpowers-dev (development workflows)
+
+Superpowers ready! ✅
+```
+
+**If NOT installed, proceed with installation**:
 ```bash
 /plugin marketplace add obra/superpowers
 ```
@@ -83,7 +101,27 @@ MCPs (Model Context Protocol) provide external tool integrations for database, b
 
 #### 3.1: Install Chrome DevTools MCP
 
-**Command**:
+**Step 3.1.1: Check if already installed**
+```bash
+# Check for chrome-devtools MCP tools
+/tools
+# Look for: mcp__chrome-devtools__*
+```
+
+**If already installed**:
+```markdown
+✅ Chrome DevTools MCP already installed - skipping
+
+Available tools:
+✅ mcp__chrome-devtools__navigate
+✅ mcp__chrome-devtools__click
+✅ mcp__chrome-devtools__screenshot
+✅ mcp__chrome-devtools__evaluate
+
+Chrome DevTools MCP ready! ✅
+```
+
+**If NOT installed, proceed with installation**:
 ```bash
 claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
 ```
@@ -112,7 +150,27 @@ Chrome DevTools MCP ready! ✅
 
 #### 3.2: Install Supabase MCP
 
-**Command**:
+**Step 3.2.1: Check if already installed**
+```bash
+# Check for supabase MCP tools
+/tools
+# Look for: mcp__supabase__*
+```
+
+**If already installed**:
+```markdown
+✅ Supabase MCP already installed - skipping
+
+Available tools:
+✅ mcp__supabase__execute_sql
+✅ mcp__supabase__apply_migration
+✅ mcp__supabase__list_tables
+✅ mcp__supabase__get_advisors
+
+Supabase MCP ready! ✅
+```
+
+**If NOT installed, proceed with installation**:
 ```bash
 claude mcp add --transport http supabase "https://mcp.supabase.com/mcp"
 ```
