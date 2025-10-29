@@ -38,6 +38,9 @@
       "license": "MIT",
       "keywords": ["orchestrator", "workflow", "automation", "coordination", "superpowers"],
       "strict": false,
+      "skills": [
+        "./plugins/nexus"
+      ],
       "commands": [
         "./plugins/nexus/commands/nexus.md",
         "./plugins/nexus/commands/nexus-setup.md",
